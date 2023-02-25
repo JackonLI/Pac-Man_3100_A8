@@ -19,9 +19,9 @@ ZHANG Juyuan, 1155160257
 # Progress
 Phase 1: High-Level Design Document    (DONE)
 
-Phase 2a: DFD Specification Document    (DUE at 2/25)
+Phase 2a: DFD Specification Document    (DONE)
 
-Phase 2b: GitHub Repository Creation    (DUE at 2/25)
+Phase 2b: GitHub Repository Creation    (DONE)
 
 Phase 3: UML Specification and UI Design Document    (DUE at 3/25)
 
