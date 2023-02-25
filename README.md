@@ -7,7 +7,11 @@ We are building our own version of the classic Pac-Man game in Python! We plan t
 # Group Members
 
 BAI Yuan, 1155157073
+
 BAO Wenrui, 1155157220
+
 LI Jianqiang, 1155157143
+
 YUE Haoyuan, 1155157271
+
 ZHANG Juyuan, 1155160257
