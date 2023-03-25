@@ -23,7 +23,7 @@ Phase 2a: DFD Specification Document    (DONE)
 
 Phase 2b: GitHub Repository Creation    (DONE)
 
-Phase 3: UML Specification and UI Design Document    (DUE at 3/25)
+Phase 3: UML Specification and UI Design Document    (DONE)
 
 Phase 4: Project Demo    (DUE at 4/13)
 
