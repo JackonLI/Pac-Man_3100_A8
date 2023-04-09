@@ -12,7 +12,7 @@ class Game(object):
         # initialize tkinter window parameters
         self.root = Tk()
         self.root.title("Pac-Man-A8")
-        self.root.geometry("480x640")
+        self.root.geometry("800x640")
         self.root.resizable(0, 0)
 
         # initialize some engine variables
@@ -109,11 +109,11 @@ class Game(object):
         self.wGameLabelScore = Label(self.root, text=("Current Score: " + str(self.statusScore)))
         self.wGameLabelLife = Label(self.root, text=("Life: " + str(self.statusLife)))
         self.wGameLabelRecord = Label(self.root, text=("Record: " + str(self.statusRecord)))
-        self.wGameCanv = Canvas(width=480, height=600)
-        self.wGameCanvLabelGetReady = self.wGameCanv.create_image(240, 326, image=None)
-        self.wGameCanvLabelGameOver = self.wGameCanv.create_image(240, 327, image=None)
-        self.wGameCanvLabelWin = self.wGameCanv.create_image(240, 327, image=None)
-        self.wGameCanvObjects = [[self.wGameCanv.create_image(0, 0, image=None) for j in range(32)] for i in range(28)]
+        self.wGameCanv = Canvas(width=800, height=600)
+        self.wGameCanvLabelGetReady = self.wGameCanv.create_image(405, 327, image=None)
+        self.wGameCanvLabelGameOver = self.wGameCanv.create_image(410, 327, image=None)
+        self.wGameCanvLabelWin = self.wGameCanv.create_image(410, 327, image=None)
+        self.wGameCanvObjects = [[self.wGameCanv.create_image(0, 0, image=None) for j in range(32)] for i in range(48)]
         self.wGameCanv.config(background="black")
         self.wGameCanvMovingObjects = [self.wGameCanv.create_image(0, 0, image=None) for n in
                                        range(5)]  # 0: pacman, 1-4: ghosts
@@ -131,10 +131,11 @@ class Game(object):
         self.root.bind('<Return>', self.inputResponseReturn)
 
         # execute the game
-        self.root.mainloop()
+        # self.root.mainloop()
 
         # call the next phase of initialization: level initialization
         self.__initLevelOnce(1)
+        self.root.mainloop()
 
     def __initLevelSelect(self):
         # level selection, showing all relevant widgets
@@ -169,18 +170,20 @@ class Game(object):
         # place the canvas and set isPlaying True
         self.wGameCanv.place(x=0, y=30)
         self.wGameLabelScore.place(x=10, y=5)
-        self.wGameLabelRecord.place(x=420, y=5)
-        self.wGameLabelLife.place(x=10, y=635)
+        self.wGameLabelRecord.place(x=350, y=5)
+        self.wGameLabelLife.place(x=750, y=5)
 
     def __initLevel(self, level):
 
         self.currentLv = int(level)
         maze.newMaze.load_maze(level)  # generate selected/passed level
+        #self.wGameCanvObjects = [[self.wGameCanv.create_image(0, 0, image=None) for j in range(32)] for i in range(48)]
 
         # check the name of the object and bind the sprite, adjust their coordinate
-        for j in range(27):
+        for j in range(32):
             for i in range(48):
 
+                #print("row: {}, col: {}, name: {}".format(j, i, maze.newMaze.levelObjects[i][j].name))
                 if maze.newMaze.levelObjects[i][j].name == "empty":
                     pass
                 elif maze.newMaze.levelObjects[i][j].name == "wall":
@@ -262,6 +265,7 @@ class Game(object):
 
     def inputResponseEsc(self, event):
         self.timerLoop.stop()
+        pygame.mixer.music.stop()
         messagebox.showinfo("Game Over!", "You hit the escape key!")
 
     def inputResponseReturn(self, event):
@@ -375,7 +379,7 @@ class Game(object):
 
             # check the object passed maze edges
             if maze.newMaze.movingObjectPacman.dirEdgePassed == True:
-                self.wGameCanv.move(self.wGameCanvMovingObjects[0], 0, 17 * 26 + 17)
+                self.wGameCanv.move(self.wGameCanvMovingObjects[0], 0, 17 * 31 + 17)
                 maze.newMaze.movingObjectPacman.dirEdgePassed = False
             else:
                 pass
@@ -398,7 +402,7 @@ class Game(object):
 
             # check the object passed maze edges
             if maze.newMaze.movingObjectPacman.dirEdgePassed == True:
-                self.wGameCanv.move(self.wGameCanvMovingObjects[0], 0, -(17 * 26 + 17))
+                self.wGameCanv.move(self.wGameCanvMovingObjects[0], 0, -(17 * 31 + 17))
                 maze.newMaze.movingObjectPacman.dirEdgePassed = False
             else:
                 pass
@@ -481,7 +485,7 @@ class Game(object):
 
                         # check the object passed maze edges
                         if maze.newMaze.movingObjectGhosts[ghostNo].dirEdgePassed == True:
-                            self.wGameCanv.move(self.wGameCanvMovingObjects[ghostNo + 1], 0, 17 * 26 + 17)
+                            self.wGameCanv.move(self.wGameCanvMovingObjects[ghostNo + 1], 0, 17 * 31 + 17)
                             maze.newMaze.movingObjectGhosts[ghostNo].dirEdgePassed = False
                         else:
                             pass
@@ -508,7 +512,7 @@ class Game(object):
 
                         # check the object passed maze edges
                         if maze.newMaze.movingObjectGhosts[ghostNo].dirEdgePassed == True:
-                            self.wGameCanv.move(self.wGameCanvMovingObjects[ghostNo + 1], 0, -(17 * 26 + 17))
+                            self.wGameCanv.move(self.wGameCanvMovingObjects[ghostNo + 1], 0, -(17 * 31 + 17))
                             maze.newMaze.movingObjectGhosts[ghostNo].dirEdgePassed = False
                         else:
                             pass
@@ -587,7 +591,7 @@ class Game(object):
                     elif maze.newMaze.movingObjectGhosts[ghostNo].dirCurrent == "Up":
                         # check the object passed maze edges
                         if maze.newMaze.movingObjectGhosts[ghostNo].dirEdgePassed == True:
-                            self.wGameCanv.move(self.wGameCanvMovingObjects[ghostNo + 1], 0, 17 * 26 + 17)
+                            self.wGameCanv.move(self.wGameCanvMovingObjects[ghostNo + 1], 0, 17 * 31 + 17)
                             maze.newMaze.movingObjectGhosts[ghostNo].dirEdgePassed = False
                         else:
                             pass
@@ -613,7 +617,7 @@ class Game(object):
                     elif maze.newMaze.movingObjectGhosts[ghostNo].dirCurrent == "Down":
                         # check the object passed maze edges
                         if maze.newMaze.movingObjectGhosts[ghostNo].dirEdgePassed == True:
-                            self.wGameCanv.move(self.wGameCanvMovingObjects[ghostNo + 1], 0, -(17 * 26 + 17))
+                            self.wGameCanv.move(self.wGameCanvMovingObjects[ghostNo + 1], 0, -(17 * 31 + 17))
                             maze.newMaze.movingObjectGhosts[ghostNo].dirEdgePassed = False
                         else:
                             pass
@@ -769,9 +773,9 @@ class Game(object):
 
         if self.statusFinishTimer < 9:
             # wall blinking function
-            if self.statusFinishTimer % 2 == 1:
+            if self.statusFinishTimer % 3 == 1:
                 self.wSprites.update({'wall': PhotoImage(file="resources/graphics/wall2.png")})
-                for j in range(27):
+                for j in range(32):
                     for i in range(48):
                         if maze.newMaze.levelObjects[i][j].name == "wall":
                             self.wGameCanv.itemconfig(self.wGameCanvObjects[i][j], image=self.wSprites['wall'])
