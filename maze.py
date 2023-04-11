@@ -265,30 +265,78 @@ class movingObject(object):
                 dirDOF = 2
                 dirAvailable.append(dirCur)
 
-            try:
-                if dirDOF == 1:  # to opposite direction, in this case, dirAvailable only have one item (which is opposite dir)
-                    return dirAvailable[
-                        0]  # this might not use dirOpp as if the object is stopped, dirOpp is not binded properly
-
-                elif dirDOF == 2:  # advance toward current direction
-                    if dirCur in dirAvailable:  # straight
-                        return dirCur
-                    elif dirCur == 'Stop':  # somehow this object stopped at straight way
-                        return dirAvailable[0]
-                    else:  # curved
-                        dirAvailable.remove(self.dirOpposite)
-                        return dirAvailable[0]
+            if self.weakTimer<=2: # Ghost Not weak
+                try:
+                    if dirDOF == 1:  # to opposite direction, in this case, dirAvailable only have one item (which is opposite dir)
+                        return dirAvailable[
+                            0]  # this might not use dirOpp as if the object is stopped, dirOpp is not binded properly
 
 
-                elif dirDOF == 3 or dirDOF == 4:
-                    if dirCur == 'Stop':
-                        randNo = randint(0, dirDOF - 1)  # generate a random number, selection of degree of freedom
-                        return dirAvailable[randNo]
-                    else:
-                        dirAvailable.remove(self.dirOpposite)  # except the opposite direction
-                        randNo = randint(0,
-                                         dirDOF - 2)  # generate a random number, selection of degree of freedom (except the opposite dir)
-                        return dirAvailable[randNo]
+                    elif dirDOF == 2:  # advance toward current direction
+                        if dirCur in dirAvailable:  # straight
+                            return dirCur
+                        elif dirCur == 'Stop':  # somehow this object stopped at straight way
+                            return dirAvailable[0]
+                        else:  # curved
+                            dirAvailable.remove(self.dirOpposite)
+                            return dirAvailable[0]
+
+
+                    elif dirDOF == 3 or dirDOF == 4:
+                        if dirCur == 'Stop':
+                            randNo = randint(0, dirDOF - 1)  # generate a random number, selection of degree of freedom
+                            return dirAvailable[randNo]
+                        else:
+                            dirAvailable.remove(self.dirOpposite)  # except the opposite direction
+                            randNo = randint(0,
+                                             dirDOF - 2)  # generate a random number, selection of degree of freedom (except the opposite dir)
+                            return dirAvailable[randNo]
+
+
+                except ValueError:  # prevent the first loop error (default values would cause ValueError)
+                    pass
+
+            elif self.weakTimer>0:# Ghost weak
+                try:
+                    if dirDOF == 1:  # to opposite direction, in this case, dirAvailable only have one item (which is opposite dir)
+                        return dirAvailable[
+                            0]  # this might not use dirOpp as if the object is stopped, dirOpp is not binded properly
+
+                    elif dirDOF == 2:  # advance toward current direction
+                        if dirCur in dirAvailable:  # straight
+                            return dirCur
+                        elif dirCur == 'Stop':  # somehow this object stopped at straight way
+                            return dirAvailable[0]
+                        else:  # curved
+                            dirAvailable.remove(self.dirOpposite)
+                            return dirAvailable[0]
+
+
+
+                    elif dirDOF == 3 or dirDOF == 4:
+                        distances0 = []
+
+                        SQ=0
+                        for dir in dirAvailable:
+                            if dir == 'Left':
+                                SQ = (self.coordinateRel[0] - Maze.movingObjectPacman.coordinateRel[0]) ** 2 + (
+                                        self.coordinateRel[1] -1- Maze.movingObjectPacman.coordinateRel[1]) ** 2
+                            elif dir == 'Right':
+                                SQ = (self.coordinateRel[0] - Maze.movingObjectPacman.coordinateRel[0]) ** 2 + (
+                                        self.coordinateRel[1] + 1 - Maze.movingObjectPacman.coordinateRel[1]) ** 2
+                            elif dir == 'Up':
+                                SQ = (self.coordinateRel[0] -1- Maze.movingObjectPacman.coordinateRel[0]) ** 2 + (
+                                        self.coordinateRel[1]- Maze.movingObjectPacman.coordinateRel[1]) ** 2
+                            else:
+                                SQ = (self.coordinateRel[0] +1- Maze.movingObjectPacman.coordinateRel[0]) ** 2 + (
+                                        self.coordinateRel[1] - Maze.movingObjectPacman.coordinateRel[1]) ** 2
+
+                            distances0.append(SQ)
+                        index = distances0.index(min(distances0))#weak ghost will try to leave pacman
+
+
+                        
+                        return dirAvailable[index]
 
 
             except ValueError:  # prevent the first loop error (default values would cause ValueError)
