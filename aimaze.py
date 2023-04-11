@@ -321,7 +321,7 @@ class movingObject(object):
                                     score += SQ
                             score=math.floor(score)
                             distances0.append(score)
-                        if min(distances0)>300:
+                        if min(distances0)>240:
                             dirAvailable.remove(self.dirOpposite)  # except the opposite direction
 
                             randNo = randint(0,dirDOF - 2)  # generate a random number, selection of degree of freedom (except the opposite dir)
