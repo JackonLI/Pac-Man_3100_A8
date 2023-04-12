@@ -339,8 +339,8 @@ class movingObject(object):
                         return dirAvailable[index]
 
 
-            except ValueError:  # prevent the first loop error (default values would cause ValueError)
-                pass
+                except ValueError:  # prevent the first loop error (default values would cause ValueError)
+                    pass
 
     def MoveNext(self, Maze):
         ## this function will determine pacman can move with given direction or not
