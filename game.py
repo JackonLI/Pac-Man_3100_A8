@@ -1,5 +1,6 @@
 from tkinter import Tk, Label, Entry, Button, PhotoImage, messagebox, END, Canvas
 from threading import Timer
+from random import *
 import maze
 import os
 import pygame
@@ -17,7 +18,7 @@ class Game(object):
 
         # initialize some engine variables
         self.currentLv = 1  # start from level 1
-        self.maxLv = 5  # max number of levels
+        self.maxLv = 6  # max number of levels
         self.isLevelGenerated = False  # check the level (map) is generated or not
         self.isPlaying = False  # check the game is actually started (moving) or not
         self.statusStartingTimer = 0  # countdown timer for 'get ready' feature
@@ -28,6 +29,7 @@ class Game(object):
         self.statusLife = 3  # life
         self.rebirthIndex = [(23, 13), (23, 13), (23, 13), (23, 13),
                              (23, 13)]  # relative coord of rebirth location for ghost
+        self.randomFlag = randint(1, 5)
 
         # call the next phase of initialization: loading resources
         self.__initResource()
@@ -35,17 +37,19 @@ class Game(object):
     def __initResource(self):
         ## read the sprite files
         # all sprites will saved in this dictionary
+        self.randomFlag = randint(1, 5)
         self.wSprites = {
             'getready': PhotoImage(file="resources/graphics/get_ready.png"),
             'gameover': PhotoImage(file="resources/graphics/game_over.png"),
             'win': PhotoImage(file="resources/graphics/youwin.png"),
-            'wall': PhotoImage(file="resources/graphics/wall1.png"),
+            'wall': PhotoImage(file="resources/graphics/wall{}.png".format(self.randomFlag)),
             'cage': PhotoImage(file="resources/graphics/cage.png"),
             'pellet': PhotoImage(file="resources/graphics/pellet.png"),
             'powerpellet': PhotoImage(file="resources/graphics/powerpoint.png"),
             'fruit0': PhotoImage(file="resources/graphics/fruit-0.png"),
             'fruit1': PhotoImage(file="resources/graphics/fruit-1.png"),
-            'fruit2': PhotoImage(file="resources/graphics/fruit-2.png")
+            'fruit2': PhotoImage(file="resources/graphics/fruit-2.png"),
+            'lives': PhotoImage(file="resources/graphics/pacmanR-0.png")
         }
 
         # bind sprites for moving objects
@@ -107,26 +111,27 @@ class Game(object):
 
         # initialize widgets for the game
         self.wGameLabelScore = Label(self.root, text=("Current Score: " + str(self.statusScore)))
-        self.wGameLabelLife = Label(self.root, text=("Life: " + str(self.statusLife)))
+        self.wGameLabelLife = Label(self.root, text=("Level: {}        Life: ".format(self.currentLv) + str(self.statusLife)))
         self.wGameLabelRecord = Label(self.root, text=("Record: " + str(self.statusRecord)))
         self.wGameCanv = Canvas(width=800, height=600)
         self.wGameCanvLabelGetReady = self.wGameCanv.create_image(405, 327, image=None)
         self.wGameCanvLabelGameOver = self.wGameCanv.create_image(410, 327, image=None)
         self.wGameCanvLabelWin = self.wGameCanv.create_image(410, 327, image=None)
         self.wGameCanvObjects = [[self.wGameCanv.create_image(0, 0, image=None) for j in range(32)] for i in range(48)]
+        self.wGameCanvLives = [self.wGameCanv.create_image(0, 0, image=None) for j in range(5)]
         self.wGameCanv.config(background="black")
         self.wGameCanvMovingObjects = [self.wGameCanv.create_image(0, 0, image=None) for n in
                                        range(5)]  # 0: pacman, 1-4: ghosts
 
         # key binds for the game control
         self.root.bind('<Left>', self.inputResponseLeft)
-        self.root.bind('<A>', self.inputResponseLeft)
+        self.root.bind('a', self.inputResponseLeft)
         self.root.bind('<Right>', self.inputResponseRight)
-        self.root.bind('<D>', self.inputResponseRight)
+        self.root.bind('d', self.inputResponseRight)
         self.root.bind('<Up>', self.inputResponseUp)
-        self.root.bind('<W>', self.inputResponseUp)
+        self.root.bind('w', self.inputResponseUp)
         self.root.bind('<Down>', self.inputResponseDown)
-        self.root.bind('<S>', self.inputResponseDown)
+        self.root.bind('s', self.inputResponseDown)
         self.root.bind('<Escape>', self.inputResponseEsc)
         self.root.bind('<Return>', self.inputResponseReturn)
 
@@ -134,6 +139,7 @@ class Game(object):
         # self.root.mainloop()
 
         # call the next phase of initialization: level initialization
+        maze.newMaze.randomFlag = randint(1, 2)
         self.__initLevelOnce(self.currentLv)
         self.root.mainloop()
 
@@ -161,6 +167,7 @@ class Game(object):
     def __initLevelOnce(self, level):
         ## this function will be called only once
 
+        self.randomFlag = randint(1, 5)
         self.__initLevel(level)
 
         # removing level selection features
@@ -171,13 +178,16 @@ class Game(object):
         self.wGameCanv.place(x=0, y=30)
         self.wGameLabelScore.place(x=10, y=5)
         self.wGameLabelRecord.place(x=350, y=5)
-        self.wGameLabelLife.place(x=750, y=5)
+        self.wGameLabelLife.place(x=680, y=5)
 
     def __initLevel(self, level):
 
         self.currentLv = int(level)
         maze.newMaze.load_maze(level)  # generate selected/passed level
         #self.wGameCanvObjects = [[self.wGameCanv.create_image(0, 0, image=None) for j in range(32)] for i in range(48)]
+
+        self.wSprites.update({'wall': PhotoImage(file="resources/graphics/wall{}.png".format(self.randomFlag))})
+        self.wGameLabelLife.configure(text=("Level: {}        Life: ".format(self.currentLv) + str(self.statusLife)))
 
         # check the name of the object and bind the sprite, adjust their coordinate
         for j in range(32):
@@ -228,6 +238,12 @@ class Game(object):
                     else:
                         pass
 
+        for i in range(5):
+            if i <= self.statusLife and i > 0:
+                self.wGameCanv.itemconfig(self.wGameCanvLives[i], image=self.wSprites['lives'],
+                                          state='normal')
+                self.wGameCanv.coords(self.wGameCanvLives[i], 3 + i * 17 + 8, 30 + 32 * 17 + 8)
+
         # bind the sprite and give it current coord. for pacman
         self.wGameCanv.coords(self.wGameCanvMovingObjects[0],
                               3 + maze.newMaze.movingObjectPacman.coordinateRel[0] * 17 + 8,
@@ -245,7 +261,7 @@ class Game(object):
 
         # advance to next phase: get ready!
         pygame.mixer.music.stop()
-        pygame.mixer.music.load("resources/audio/intro.wav")
+        pygame.mixer.music.load("resources/audio/sound_intro.mp3")
         pygame.mixer.music.play(loops=0, start=0.0)
         self.isLevelGenerated = True
         self.timerReady = PerpetualTimer(0.55, self.__initLevelStarting)
@@ -301,7 +317,8 @@ class Game(object):
 
         # ghost sound as music
         pygame.mixer.music.stop()
-        pygame.mixer.music.load("resources/audio/bgm.wav")
+        self.randomFlagBGM = randint(1, 4)
+        pygame.mixer.music.load("resources/audio/bgm{}.wav".format(self.randomFlagBGM+1))
         pygame.mixer.music.play(-1)
 
         self.timerLoop = PerpetualTimer(0.045, self.loopFunction)
@@ -779,8 +796,8 @@ class Game(object):
 
         if self.statusFinishTimer < 9:
             # wall blinking function
-            if self.statusFinishTimer % 3 == 1:
-                self.wSprites.update({'wall': PhotoImage(file="resources/graphics/wall2.png")})
+            if self.statusFinishTimer % 2 == 1:
+                self.wSprites.update({'wall': PhotoImage(file="resources/graphics/wall7.png")})
                 for j in range(32):
                     for i in range(48):
                         if maze.newMaze.levelObjects[i][j].name == "wall":
@@ -822,14 +839,20 @@ class Game(object):
             self.winTimer.start()
         else:
             self.isLevelGenerated = False
+            self.randomFlag = randint(1, 5)
+            self.wGameCanvObjects = [[self.wGameCanv.create_image(0, 0, image=None) for j in range(32)] for i in
+                                     range(48)]
+            maze.newMaze.randomFlag = randint(1, 2)
             self.__initLevel(self.currentLv)
 
     def encounterEventDead(self):
 
+        self.wGameCanv.itemconfig(self.wGameCanvLives[self.statusLife], image=self.wSprites['lives'],
+                                  state='hidden')
         self.statusLife -= 1  # subtract remaining life
 
         if self.statusLife >= 0:
-            self.wGameLabelLife.configure(text=("Life: " + str(self.statusLife)))  # showing on the board
+            self.wGameLabelLife.configure(text=("Level: {}        Life: ".format(self.currentLv) + str(self.statusLife)))  # showing on the board
         else:  # prevent showing minus life (will be game over anyway)
             pass
 
