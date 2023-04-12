@@ -4,11 +4,12 @@ from random import *
 import maze
 import os
 import pygame
+import time
 
 
 class Game(object):
 
-    def __init__(self):
+    def __init__(self, highscore = 0):
 
         # initialize tkinter window parameters
         self.root = Tk()
@@ -25,14 +26,19 @@ class Game(object):
         self.statusDeadTimer = 0  # countdown timer for dead event
         self.statusFinishTimer = 0  # countdown timer for clear event
         self.statusScore = 0  # score
-        self.statusRecord = 0  # record
+        self.statusRecord = highscore  # record
         self.statusLife = 3  # life
         self.rebirthIndex = [(23, 13), (23, 13), (23, 13), (23, 13),
                              (23, 13)]  # relative coord of rebirth location for ghost
         self.randomFlag = randint(1, 5)
+        self.gameOverFlag = False
 
-        # call the next phase of initialization: loading resources
+
+    def run(self):
+    # call the next phase of initialization: loading resources
         self.__initResource()
+        #print("Record: {}".format(self.statusRecord))
+        return self.statusRecord
 
     def __initResource(self):
         ## read the sprite files
@@ -96,7 +102,7 @@ class Game(object):
             'chomp1': pygame.mixer.Sound(file="resources/audio/click1.wav"),
             'chomp2': pygame.mixer.Sound(file="resources/audio/click4.wav"),
             'eat_power': pygame.mixer.Sound(file="resources/audio/click3.wav"),
-            'eat_fruit': pygame.mixer.Sound(file="resources/audio/drink.wav"),
+            'eat_fruit': pygame.mixer.Sound(file="resources/audio/click2.wav"),
             'eat_ghost': pygame.mixer.Sound(file="resources/audio/eat_ghost.wav")
         }
 
@@ -116,7 +122,7 @@ class Game(object):
         self.wGameCanv = Canvas(width=800, height=600)
         self.wGameCanvLabelGetReady = self.wGameCanv.create_image(405, 327, image=None)
         self.wGameCanvLabelGameOver = self.wGameCanv.create_image(410, 327, image=None)
-        self.wGameCanvLabelWin = self.wGameCanv.create_image(410, 327, image=None)
+        self.wGameCanvLabelWin = self.wGameCanv.create_image(400, 300, image=None)
         self.wGameCanvObjects = [[self.wGameCanv.create_image(0, 0, image=None) for j in range(32)] for i in range(48)]
         self.wGameCanvLives = [self.wGameCanv.create_image(0, 0, image=None) for j in range(5)]
         self.wGameCanv.config(background="black")
@@ -282,12 +288,14 @@ class Game(object):
     def inputResponseEsc(self, event):
         self.timerLoop.stop()
         pygame.mixer.music.stop()
-        messagebox.showinfo("Game Over!", "You hit the escape key!")
+        messagebox.showinfo("Game Over!", "You hit the escape key!\nWill quit after click")
+        time.sleep(5)
+        self.root.quit()
 
     def inputResponseReturn(self, event):
-        # skip feature
-        if self.isLevelGenerated == True and self.isPlaying == False:
-            self.gameStartingTrigger()
+        # return to homepage
+        if self.gameOverFlag == True:
+            self.root.quit()
         else:
             pass
 
@@ -676,7 +684,11 @@ class Game(object):
 
                     # get plenty of score
                     self.statusScore += 100  # adjust the score
+                    if self.statusScore > self.statusRecord:
+                        self.statusRecord = self.statusScore
                     self.wGameLabelScore.configure(text=("Score: " + str(self.statusScore)))  # showing on the board
+                    if self.statusRecord == self.statusScore:
+                        self.wGameLabelRecord.configure(text=("New Record: " + str(self.statusRecord)))  # showing on the board
 
                     # reset the ghost
                     delta_y = self.rebirthIndex[self.currentLv - 1][1] - \
@@ -712,7 +724,12 @@ class Game(object):
                         self.wSounds['chomp2'].play(loops=0)
 
                     self.statusScore += 10  # adjust the score
+                    if self.statusScore > self.statusRecord:
+                        self.statusRecord = self.statusScore
                     self.wGameLabelScore.configure(text=("Score: " + str(self.statusScore)))  # showing on the board
+                    if self.statusRecord == self.statusScore:
+                        self.wGameLabelRecord.configure(
+                            text=("New Record: " + str(self.statusRecord)))  # showing on the board
                     maze.newMaze.levelPelletRemaining -= 1  # adjust the remaining pellet numbers
 
                     if maze.newMaze.levelPelletRemaining == 0:
@@ -733,7 +750,12 @@ class Game(object):
                     self.wSounds['eat_power'].play(loops=0)
 
                     self.statusScore += 50  # adjust the score
+                    if self.statusScore > self.statusRecord:
+                        self.statusRecord = self.statusScore
                     self.wGameLabelScore.configure(text=("Score: " + str(self.statusScore)))  # showing on the board
+                    if self.statusRecord == self.statusScore:
+                        self.wGameLabelRecord.configure(
+                            text=("New Record: " + str(self.statusRecord)))  # showing on the board
                     maze.newMaze.levelPelletRemaining -= 1  # adjust the remaining pellet numbers
 
                     if maze.newMaze.levelPelletRemaining == 0:
@@ -762,9 +784,14 @@ class Game(object):
                             # play the sound
                             self.wSounds['eat_fruit'].play(loops=0)
 
-                            self.statusScore += 20 + i * 10  # adjust the score
+                            self.statusScore += 50 + i * 10  # adjust the score
+                            if self.statusScore > self.statusRecord:
+                                self.statusRecord = self.statusScore
                             self.wGameLabelScore.configure(
                                 text=("Score: " + str(self.statusScore)))  # showing on the board
+                            if self.statusRecord == self.statusScore:
+                                self.wGameLabelRecord.configure(
+                                    text=("New Record: " + str(self.statusRecord)))  # showing on the board
                             # maze.newMaze.levelPelletRemaining -= 1  # adjust the remaining pellet numbers
 
                             if maze.newMaze.levelPelletRemaining == 0:
@@ -922,6 +949,7 @@ class Game(object):
 
         else:  # after 8 loop, the game is completely finished
             self.gameOverTimer.stop()
+            self.gameOverFlag = True
 
     def encounterEventWin(self):
         self.statusWinTimer += 1
@@ -936,6 +964,7 @@ class Game(object):
 
         else:  # after 8 loop, the game is completely finished
             self.winTimer.stop()
+            self.gameOverFlag = True
 
 
 class PerpetualTimer(object):
@@ -968,4 +997,6 @@ pygame.mixer.init(22050, -16, 2, 64)
 pygame.init()
 
 # start the game
-newGame = Game()
+newGame = Game(500)
+print("Game over! Your record: {}".format(newGame.run()))
+print("Your score: {}".format(newGame.statusScore))
