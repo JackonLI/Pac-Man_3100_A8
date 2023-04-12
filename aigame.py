@@ -26,8 +26,8 @@ class Game(object):
         self.statusScore = 0  # score
         self.statusRecord = 0  # record
         self.statusLife = 3  # life
-        self.rebirthIndex = [(24, 14), (24, 14), (24, 14), (24, 14),
-                             (24, 14)]  # relative coord of rebirth location for ghost
+        self.rebirthIndex = [(23, 13), (23, 13), (23, 13), (23, 13),
+                             (23, 13)]  # relative coord of rebirth location for ghost
 
         # call the next phase of initialization: loading resources
         self.__initResource()
@@ -665,12 +665,16 @@ class Game(object):
                     self.wGameLabelScore.configure(text=("Score: " + str(self.statusScore)))  # showing on the board
 
                     # reset the ghost
-                    aimaze.newMaze.movingObjectGhosts[i].weakTimer = 0
-                    delta_x = self.rebirthIndex[self.currentLv - 1][1] - \
-                              aimaze.newMaze.movingObjectGhosts[i].coordinateRel[1]
-                    delta_y = self.rebirthIndex[self.currentLv - 1][0] - \
-                              aimaze.newMaze.movingObjectGhosts[i].coordinateRel[0]
-                    self.wGameCanv.move(self.wGameCanvMovingObjects[i + 1], 17 * delta_x, 17 * delta_y)
+                    # adjust current coordinate
+                    aimaze.newMaze.movingObjectGhosts[i].coordinateRel[0] = self.rebirthIndex[self.currentLv - 1][0]
+                    aimaze.newMaze.movingObjectGhosts[i].coordinateRel[1] = self.rebirthIndex[self.currentLv - 1][1]
+                    aimaze.newMaze.movingObjectGhosts[i].coordinateAbs[0] = self.rebirthIndex[self.currentLv - 1][0] * 4
+                    aimaze.newMaze.movingObjectGhosts[i].coordinateAbs[1] = self.rebirthIndex[self.currentLv - 1][1] * 4
+
+                    self.wGameCanv.coords(self.wGameCanvMovingObjects[i + 1],
+                                          3 + self.rebirthIndex[self.currentLv - 1][0] * 17 + 8,
+                                          30 + self.rebirthIndex[self.currentLv - 1][1] * 17 + 8)
+                    aimaze.newMaze.movingObjectGhosts[i].weakTimer = 5
 
         # check the object reaches grid coordinate
         if coordAbsP[0] % 4 == 0 and coordAbsP[1] % 4 == 0:
@@ -786,7 +790,7 @@ class Game(object):
                             pass
             else:
                 self.wSprites.update({'wall': PhotoImage(file="resources/graphics/wall1.png")})
-                for j in range(27):
+                for j in range(32):
                     for i in range(48):
                         if aimaze.newMaze.levelObjects[i][j].name == "wall":
                             self.wGameCanv.itemconfig(self.wGameCanvObjects[i][j], image=self.wSprites['wall'])
@@ -801,7 +805,7 @@ class Game(object):
         self.statusFinishTimer = 0
 
         # reset all values and hide the sprite (or level generate process will be shown)
-        for j in range(27):
+        for j in range(32):
             for i in range(48):
                 aimaze.newMaze.levelObjects[i][j].reset('')
                 # self.wGameCanv.itemconfigure(self.wGameCanvObjects[i][j], state='hidden')
