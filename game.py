@@ -116,9 +116,9 @@ class Game(object):
         # self.wLvBtn = Button(self.root, text="Select", command=self.lvSelect, width=5, height=1)
 
         # initialize widgets for the game
-        self.wGameLabelScore = Label(self.root, text=("Current Score: " + str(self.statusScore)))
-        self.wGameLabelLife = Label(self.root, text=("Level: {}        Life: ".format(self.currentLv) + str(self.statusLife)))
-        self.wGameLabelRecord = Label(self.root, text=("Record: " + str(self.statusRecord)))
+        self.wGameLabelScore = Label(self.root, text=("Score:" + str(self.statusScore)), font= ("Zig"))
+        self.wGameLabelLife = Label(self.root, text=("LV{}  Life:".format(self.currentLv) + str(self.statusLife)), font= ("Zig"))
+        self.wGameLabelRecord = Label(self.root, text=("Record:" + str(self.statusRecord)), font= ("Zig"))
         self.wGameCanv = Canvas(width=800, height=600)
         self.wGameCanvLabelGetReady = self.wGameCanv.create_image(405, 327, image=None)
         self.wGameCanvLabelGameOver = self.wGameCanv.create_image(410, 327, image=None)
@@ -182,9 +182,9 @@ class Game(object):
         # self.wLvBtn.destroy()
         # place the canvas and set isPlaying True
         self.wGameCanv.place(x=0, y=30)
-        self.wGameLabelScore.place(x=10, y=5)
-        self.wGameLabelRecord.place(x=350, y=5)
-        self.wGameLabelLife.place(x=680, y=5)
+        self.wGameLabelScore.place(x=5, y=5)
+        self.wGameLabelRecord.place(x=210, y=5)
+        self.wGameLabelLife.place(x=615, y=5)
 
     def __initLevel(self, level):
 
@@ -193,7 +193,7 @@ class Game(object):
         #self.wGameCanvObjects = [[self.wGameCanv.create_image(0, 0, image=None) for j in range(32)] for i in range(48)]
 
         self.wSprites.update({'wall': PhotoImage(file="resources/graphics/wall{}.png".format(self.randomFlag))})
-        self.wGameLabelLife.configure(text=("Level: {}        Life: ".format(self.currentLv) + str(self.statusLife)))
+        self.wGameLabelLife.configure(text=("LV{}  Life:".format(self.currentLv) + str(self.statusLife)), font= ("Zig"))
 
         # check the name of the object and bind the sprite, adjust their coordinate
         for j in range(32):
@@ -686,9 +686,9 @@ class Game(object):
                     self.statusScore += 100  # adjust the score
                     if self.statusScore > self.statusRecord:
                         self.statusRecord = self.statusScore
-                    self.wGameLabelScore.configure(text=("Score: " + str(self.statusScore)))  # showing on the board
+                    self.wGameLabelScore.configure(text=("Score:" + str(self.statusScore)), font= ("Zig"))  # showing on the board
                     if self.statusRecord == self.statusScore:
-                        self.wGameLabelRecord.configure(text=("New Record: " + str(self.statusRecord)))  # showing on the board
+                        self.wGameLabelRecord.configure(text=("Record:" + str(self.statusRecord)), font= ("Zig"), fg="red")  # showing on the board
 
                     # reset the ghost
                     delta_y = self.rebirthIndex[self.currentLv - 1][1] - \
@@ -726,10 +726,10 @@ class Game(object):
                     self.statusScore += 10  # adjust the score
                     if self.statusScore > self.statusRecord:
                         self.statusRecord = self.statusScore
-                    self.wGameLabelScore.configure(text=("Score: " + str(self.statusScore)))  # showing on the board
+                    self.wGameLabelScore.configure(text=("Score:" + str(self.statusScore)), font= ("Zig"))  # showing on the board
                     if self.statusRecord == self.statusScore:
                         self.wGameLabelRecord.configure(
-                            text=("New Record: " + str(self.statusRecord)))  # showing on the board
+                            text=("Record:" + str(self.statusRecord)), font= ("Zig"), fg="red")  # showing on the board
                     maze.newMaze.levelPelletRemaining -= 1  # adjust the remaining pellet numbers
 
                     if maze.newMaze.levelPelletRemaining == 0:
@@ -752,10 +752,10 @@ class Game(object):
                     self.statusScore += 50  # adjust the score
                     if self.statusScore > self.statusRecord:
                         self.statusRecord = self.statusScore
-                    self.wGameLabelScore.configure(text=("Score: " + str(self.statusScore)))  # showing on the board
+                    self.wGameLabelScore.configure(text=("Score:" + str(self.statusScore)), font= ("Zig"))  # showing on the board
                     if self.statusRecord == self.statusScore:
                         self.wGameLabelRecord.configure(
-                            text=("New Record: " + str(self.statusRecord)))  # showing on the board
+                            text=("Record:" + str(self.statusRecord)), font= ("Zig"), fg="red")  # showing on the board
                     maze.newMaze.levelPelletRemaining -= 1  # adjust the remaining pellet numbers
 
                     if maze.newMaze.levelPelletRemaining == 0:
@@ -788,10 +788,10 @@ class Game(object):
                             if self.statusScore > self.statusRecord:
                                 self.statusRecord = self.statusScore
                             self.wGameLabelScore.configure(
-                                text=("Score: " + str(self.statusScore)))  # showing on the board
+                                text=("Score:" + str(self.statusScore)), font= ("Zig"))  # showing on the board
                             if self.statusRecord == self.statusScore:
                                 self.wGameLabelRecord.configure(
-                                    text=("New Record: " + str(self.statusRecord)))  # showing on the board
+                                    text=("New Record:" + str(self.statusRecord)), font= ("Zig"))  # showing on the board
                             # maze.newMaze.levelPelletRemaining -= 1  # adjust the remaining pellet numbers
 
                             if maze.newMaze.levelPelletRemaining == 0:
@@ -879,7 +879,7 @@ class Game(object):
         self.statusLife -= 1  # subtract remaining life
 
         if self.statusLife >= 0:
-            self.wGameLabelLife.configure(text=("Level: {}        Life: ".format(self.currentLv) + str(self.statusLife)))  # showing on the board
+            self.wGameLabelLife.configure(text=("LV{}  Life:".format(self.currentLv) + str(self.statusLife)), font= ("Zig"))  # showing on the board
         else:  # prevent showing minus life (will be game over anyway)
             pass
 
