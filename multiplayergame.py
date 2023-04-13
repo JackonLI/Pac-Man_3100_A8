@@ -42,6 +42,9 @@ class Game(object):
         #print("Record: {}".format(self.statusRecord))
         return self.statusRecord
 
+    def close(self):
+        self.root.destroy()
+
     def __initResource(self):
         ## read the sprite files
         # all sprites will saved in this dictionary
