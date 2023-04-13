@@ -1,6 +1,6 @@
 import os
 import pygame, sys, random
-
+import game
 mainClock = pygame.time.Clock()
 from pygame.locals import *
 
@@ -9,7 +9,7 @@ PURPLE = (153, 102, 204)
 SCREENSIZE = [700, 500]
 
 
-class Homepage:
+class Homepage(object):
     def __init__(self, name, score):
         self.name = name
         self.score = score
@@ -17,13 +17,13 @@ class Homepage:
     def update_info(self):
         return self.name, self.score
  
-    def draw_text(text, font, color, surface, x, y):
+    def draw_text(self, text, font, color, surface, x, y):
         textobj = font.render(text, 1, color)
         textrect = textobj.get_rect()
         textrect.topleft = (x, y)
         surface.blit(textobj, textrect)
     
-    def main_menu():
+    def main_menu(self):
         pygame.init()
         pygame.display.set_caption('Homepage')
         screen = pygame.display.set_mode((700, 500),0)
@@ -45,7 +45,7 @@ class Homepage:
         while True:
     
             screen.fill((151,255,255))
-            draw_text('Main Menu', font, (0,0,0), screen, 300, 40)
+            self.draw_text('Main Menu', font, (0,0,0), screen, 300, 40)
     
             mx, my = pygame.mouse.get_pos()
 
@@ -61,16 +61,16 @@ class Homepage:
             #defining functions when a certain button is pressed
             if button_1.collidepoint((mx, my)):
                 if click:
-                    game()
+                    self.game()
             if button_2.collidepoint((mx, my)):
                 if click:
-                    game()
+                    self.game()
             if button_3.collidepoint((mx, my)):
                 if click:
-                    rankList(scores)
+                    self.rankList(scores)
             if button_4.collidepoint((mx, my)):
                 if click:
-                    setting()
+                    self.setting()
             if button_5.collidepoint((mx, my)):
                 if click:
                     help()
@@ -87,12 +87,12 @@ class Homepage:
             
     
             #writing text on top of button
-            draw_text('BASIC GAME', font, (255,105,180), screen, 284, 98)
-            draw_text('AI GAME', font, (255,110,180), screen, 305, 168)
-            draw_text('RANK LIST', font, (238,106,167), screen, 295, 238)
-            draw_text('SETTING', font, (205,96,144), screen, 305, 308)
-            draw_text('HELP', font, (139,58,98), screen, 322, 378)
-            draw_text('BACK TO LOGOUT', font, (205,92,92), screen, 260, 448)
+            self.draw_text('BASIC GAME', font, (255,105,180), screen, 284, 98)
+            self.draw_text('AI GAME', font, (255,110,180), screen, 305, 168)
+            self.draw_text('RANK LIST', font, (238,106,167), screen, 295, 238)
+            self.draw_text('SETTING', font, (205,96,144), screen, 305, 308)
+            self.draw_text('HELP', font, (139,58,98), screen, 322, 378)
+            self.draw_text('BACK TO LOGOUT', font, (205,92,92), screen, 260, 448)
             
             
             for i in range(len(snow_list)):
@@ -128,11 +128,18 @@ class Homepage:
     """
     This function is called when the "PLAY" button is clicked.
     """
-    def game():
-        
+    def game(self):
+        newGame = game.Game(500)
+        #pygame.display.iconify()
+        screen = pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)
+        newGame.run()
+        print("Score: {}".format(newGame.statusScore))
+        print("New high score: {}".format(newGame.statusRecord))
+        newGame.close()
+        screen = pygame.display.set_mode((700, 500), flags=pygame.SHOWN)
+        #newHomepage.main_menu()
 
-    
-    def rankList(scores):
+    def rankList(self, scores):
         pygame.init()
         screen = pygame.display.set_mode((700, 500))
         screen.fill((255,228,196))
@@ -158,9 +165,9 @@ class Homepage:
             mx, my = pygame.mouse.get_pos()
             if button_1.collidepoint((mx, my)):
                 if click:
-                    main_menu()
+                    self.main_menu()
             pygame.draw.rect(screen, (255,228,196), button_1)
-            draw_text('BACK TO MENU', font, (255,106,106), screen, 520, 442)
+            self.draw_text('BACK TO MENU', font, (255,106,106), screen, 520, 442)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -170,7 +177,7 @@ class Homepage:
                         click = True
             pygame.display.flip()
             
-    def setting():
+    def setting(self):
         pygame.init()
         pygame.display.set_caption('SETTING')
         # Set up the display
@@ -207,9 +214,9 @@ class Homepage:
             mx, my = pygame.mouse.get_pos()
             if button_1.collidepoint((mx, my)):
                 if click:
-                    main_menu()
+                    self.main_menu()
             pygame.draw.rect(screen, (255,228,196), button_1)
-            draw_text('BACK TO MENU', font, (255,106,106), screen, 265, 442)
+            self.draw_text('BACK TO MENU', font, (255,106,106), screen, 265, 442)
             click = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -283,7 +290,7 @@ class Homepage:
             pygame.display.flip()
 
 
-    def help():
+    def help(self):
         screen = pygame.display.set_mode(SCREENSIZE)
         pygame.display.set_caption('HELP')
         clock = pygame.time.Clock()
@@ -300,9 +307,9 @@ class Homepage:
             mx, my = pygame.mouse.get_pos()
             if button_1.collidepoint((mx, my)):
                 if click:
-                    main_menu()
+                    self.main_menu()
             pygame.draw.rect(screen, GREY, button_1)
-            draw_text('BACK TO MENU', font_regular, (255,106,106), screen, 270, 442)
+            self.draw_text('BACK TO MENU', font_regular, (255,106,106), screen, 270, 442)
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
@@ -321,7 +328,8 @@ class Homepage:
                 text_rect.centery = n*25 + 50
                 screen.blit(text, text_rect)
             pygame.display.flip()
-            mainClock.tick(60)   
-    
-    main_menu()
+            mainClock.tick(60)
+
+newHomepage = Homepage(123, 456)
+newHomepage.main_menu()
 

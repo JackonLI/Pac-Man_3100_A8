@@ -40,6 +40,9 @@ class Game(object):
         #print("Record: {}".format(self.statusRecord))
         return self.statusRecord
 
+    def close(self):
+        self.root.destroy()
+
     def __initResource(self):
         ## read the sprite files
         # all sprites will saved in this dictionary
@@ -289,7 +292,6 @@ class Game(object):
         self.timerLoop.stop()
         pygame.mixer.music.stop()
         messagebox.showinfo("Game Over!", "You hit the escape key!\nWill quit after click")
-        time.sleep(5)
         self.root.quit()
 
     def inputResponseReturn(self, event):
@@ -997,6 +999,6 @@ pygame.mixer.init(22050, -16, 2, 64)
 pygame.init()
 
 # start the game
-newGame = Game(500)
-print("Game over! Your record: {}".format(newGame.run()))
-print("Your score: {}".format(newGame.statusScore))
+#newGame = Game(500)
+#print("Game over! Your record: {}".format(newGame.run()))
+#print("Your score: {}".format(newGame.statusScore))
