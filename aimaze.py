@@ -556,7 +556,7 @@ class movingObject(object):
                 except ValueError:  # prevent the first loop error (default values would cause ValueError)
                     pass
 
-            elif self.weakTimer>0:# Ghost weak
+            elif self.weakTimer>100000:# Ghost weak
                 try:
                     if dirDOF == 1:  # to opposite direction, in this case, dirAvailable only have one item (which is opposite dir)
                         return dirAvailable[
