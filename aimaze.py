@@ -335,7 +335,7 @@ class movingObject(object):
                 except ValueError:  # prevent the first loop error (default values would cause ValueError)
                     pass
 
-            elif Maze.movingObjectGhosts[0].weakTimer > 0:  # Ghost weak
+            elif Maze.movingObjectGhosts[0].weakTimer > 20:  # Ghost weak
                 try:
                     if dirDOF == 1:  # to opposite direction, in this case, dirAvailable only have one item (which is opposite dir)
                         return dirAvailable[
@@ -363,13 +363,49 @@ class movingObject(object):
 
                         else:
 
-                            dirAvailable.remove(self.dirOpposite)  # except the opposite direction
+                            distances0 = []
 
-                            randNo = randint(0,
+                            SQ = 0
+                            score = 0
+                            for dir in dirAvailable:
+                                SQ = 0
+                                score = 0
+                                for i in range(4):
+                                    if Maze.movingObjectGhosts[i].isCaged == False:
+                                        if dir == 'Left':
+                                            SQ += (self.coordinateRel[0] - Maze.movingObjectGhosts[i].coordinateRel[
+                                                0]) ** 2 + (
+                                                          self.coordinateRel[1] - 1 -
+                                                          Maze.movingObjectGhosts[i].coordinateRel[1]) ** 2
+                                        elif dir == 'Right':
+                                            SQ += (self.coordinateRel[0] - Maze.movingObjectGhosts[i].coordinateRel[
+                                                0]) ** 2 + (
+                                                          self.coordinateRel[1] + 1 -
+                                                          Maze.movingObjectGhosts[i].coordinateRel[1]) ** 2
+                                        elif dir == 'Up':
+                                            SQ += (self.coordinateRel[0] - 1 - Maze.movingObjectGhosts[i].coordinateRel[
+                                                0]) ** 2 + (
+                                                          self.coordinateRel[1] -
+                                                          Maze.movingObjectGhosts[i].coordinateRel[1]) ** 2
+                                        else:
+                                            SQ += (self.coordinateRel[0] + 1 - Maze.movingObjectGhosts[i].coordinateRel[
+                                                0]) ** 2 + (
+                                                          self.coordinateRel[1] -
+                                                          Maze.movingObjectGhosts[i].coordinateRel[1]) ** 2
+                                        score += SQ
+                                score = math.floor(score)
+                                distances0.append(score)
+                            if min(distances0) > 500:
+                                dirAvailable.remove(self.dirOpposite)  # except the opposite direction
 
-                                             dirDOF - 2)  # generate a random number, selection of degree of freedom (except the opposite dir)
+                                randNo = randint(0,
 
-                            return dirAvailable[randNo]
+                                                 dirDOF - 2)  # generate a random number, selection of degree of freedom (except the opposite dir)
+
+                                return dirAvailable[randNo]
+                            else:
+                                index = distances0.index(max(distances0))
+                                return dirAvailable[index]
 
 
 
