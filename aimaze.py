@@ -525,7 +525,7 @@ class movingObject(object):
                 dirDOF = 2
                 dirAvailable.append(dirCur)
 
-            if self.weakTimer<=2: # Ghost Not weak
+            if self.weakTimer<=20000: # Ghost Not weak
                 try:
                     if dirDOF == 1:  # to opposite direction, in this case, dirAvailable only have one item (which is opposite dir)
                         return dirAvailable[
