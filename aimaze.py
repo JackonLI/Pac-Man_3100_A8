@@ -321,15 +321,65 @@ class movingObject(object):
                                     score += SQ
                             score=math.floor(score)
                             distances0.append(score)
-                        if min(distances0)>240:
+                        if min(distances0)>150:
                             dirAvailable.remove(self.dirOpposite)  # except the opposite direction
 
-                            randNo = randint(0,dirDOF - 2)  # generate a random number, selection of degree of freedom (except the opposite dir)
+                            randNo = randint(0,
+
+                                             dirDOF - 2)  # generate a random number, selection of degree of freedom (except the opposite dir)
 
                             return dirAvailable[randNo]
                         else:
-                            index = distances0.index(min(distances0))
-                            return dirAvailable[index]
+                            if min(distances0)<200:
+                                index = distances0.index(min(distances0))
+                                return dirAvailable[index]
+                            else:
+                                SQP=0
+                                distancesbean = []
+                                for id in range(Maze.levelObjects):
+                                    if id.name == "pellet":
+                                        SQP = (self.coordinateRel[0] - id.coordinateRel[0]) ** 2 + (self.coordinateRel[1] - id.coordinateRel[1]) ** 2
+                                        SQP = math.floor(SQP)
+                                        distancesbean.append(SQP)
+                                SQP_min=min(distancesbean)
+                                for id in range(Maze.levelObjects):
+                                    if id.name == "pellet":
+                                        SQP = (self.coordinateRel[0] - id.coordinateRel[0]) ** 2 + (self.coordinateRel[1] - id.coordinateRel[1]) ** 2
+                                        if SQP<SQP_min+40:
+                                            distancesmin=[]
+                                            SQM=0
+                                            scoreM=0
+                                            for i in range(4):
+                                                if Maze.movingObjectGhosts[i].isCaged == False:
+                                                    if dir == 'Left':
+                                                        SQM += (self.coordinateRel[0] -
+                                                               id.coordinateRel[0]) ** 2 + (
+                                                                      self.coordinateRel[1] - 1 -
+                                                                      id.coordinateRel[1]) ** 2
+                                                    elif dir == 'Right':
+                                                        SQM += (self.coordinateRel[0] -
+                                                               id.coordinateRel[0]) ** 2 + (
+                                                                      self.coordinateRel[1] + 1 -
+                                                                      id.coordinateRel[1]) ** 2
+                                                    elif dir == 'Up':
+                                                        SQM += (self.coordinateRel[0] - 1 -
+                                                               id.coordinateRel[0]) ** 2 + (
+                                                                      self.coordinateRel[1] -
+                                                                      id.coordinateRel[1]) ** 2
+                                                    else:
+                                                        SQM += (self.coordinateRel[0] + 1 -
+                                                               id.coordinateRel[0]) ** 2 + (
+                                                                      self.coordinateRel[1] -
+                                                                      id.coordinateRel[1]) ** 2
+                                                    scoreM += SQM
+                                            scoreM = math.floor(scoreM)
+                                            distancesmin.append(scoreM)
+                                            indexm = distancesmin.index(min(distancesmin))
+                                            return dirAvailable[indexm]
+
+                                        else:
+                                            index = distances0.index(min(distances0))
+                                            return dirAvailable[index]
 
 
                 except ValueError:  # prevent the first loop error (default values would cause ValueError)
@@ -395,7 +445,7 @@ class movingObject(object):
                                         score += SQ
                                 score = math.floor(score)
                                 distances0.append(score)
-                            if min(distances0) > 500:
+                            if min(distances0) > 750:
                                 dirAvailable.remove(self.dirOpposite)  # except the opposite direction
 
                                 randNo = randint(0,
