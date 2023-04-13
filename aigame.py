@@ -1,13 +1,15 @@
 from tkinter import Tk, Label, Entry, Button, PhotoImage, messagebox, END, Canvas
 from threading import Timer
+from random import *
 import aimaze
 import os
 import pygame
+import time
 
 
 class Game(object):
 
-    def __init__(self):
+    def __init__(self, highscore = 0):
 
         # initialize tkinter window parameters
         self.root = Tk()
@@ -17,20 +19,30 @@ class Game(object):
 
         # initialize some engine variables
         self.currentLv = 1  # start from level 1
-        self.maxLv = 5  # max number of levels
+        self.maxLv = 6  # max number of levels
         self.isLevelGenerated = False  # check the level (map) is generated or not
         self.isPlaying = False  # check the game is actually started (moving) or not
         self.statusStartingTimer = 0  # countdown timer for 'get ready' feature
         self.statusDeadTimer = 0  # countdown timer for dead event
         self.statusFinishTimer = 0  # countdown timer for clear event
         self.statusScore = 0  # score
-        self.statusRecord = 0  # record
+        self.statusRecord = highscore  # record
         self.statusLife = 3  # life
         self.rebirthIndex = [(23, 13), (23, 13), (23, 13), (23, 13),
                              (23, 13)]  # relative coord of rebirth location for ghost
+        self.randomFlag = randint(1, 5)
+        self.gameOverFlag = False
 
+
+    def run(self):
         # call the next phase of initialization: loading resources
         self.__initResource()
+        return self.statusRecord
+
+
+    def close(self):
+        self.root.destory()
+
 
     def __initResource(self):
         ## read the sprite files
@@ -39,13 +51,14 @@ class Game(object):
             'getready': PhotoImage(file="resources/graphics/get_ready.png"),
             'gameover': PhotoImage(file="resources/graphics/game_over.png"),
             'win': PhotoImage(file="resources/graphics/youwin.png"),
-            'wall': PhotoImage(file="resources/graphics/wall1.png"),
+            'wall': PhotoImage(file="resources/graphics/wall{}.png".format(self.randomFlag)),
             'cage': PhotoImage(file="resources/graphics/cage.png"),
             'pellet': PhotoImage(file="resources/graphics/pellet.png"),
             'powerpellet': PhotoImage(file="resources/graphics/powerpoint.png"),
             'fruit0': PhotoImage(file="resources/graphics/fruit-0.png"),
             'fruit1': PhotoImage(file="resources/graphics/fruit-1.png"),
-            'fruit2': PhotoImage(file="resources/graphics/fruit-2.png")
+            'fruit2': PhotoImage(file="resources/graphics/fruit-2.png"),
+            'lives': PhotoImage(file="resources/graphics/pacmanR-0.png")
         }
 
         # bind sprites for moving objects
@@ -94,7 +107,7 @@ class Game(object):
             'chomp1': pygame.mixer.Sound(file="resources/audio/click1.wav"),
             'chomp2': pygame.mixer.Sound(file="resources/audio/click4.wav"),
             'eat_power': pygame.mixer.Sound(file="resources/audio/click3.wav"),
-            'eat_fruit': pygame.mixer.Sound(file="resources/audio/drink.wav"),
+            'eat_fruit': pygame.mixer.Sound(file="resources/audio/click2.wav"),
             'eat_ghost': pygame.mixer.Sound(file="resources/audio/eat_ghost.wav")
         }
 
@@ -108,27 +121,28 @@ class Game(object):
         # self.wLvBtn = Button(self.root, text="Select", command=self.lvSelect, width=5, height=1)
 
         # initialize widgets for the game
-        self.wGameLabelScore = Label(self.root, text=("Current Score: " + str(self.statusScore)))
-        self.wGameLabelLife = Label(self.root, text=("Life: " + str(self.statusLife)))
-        self.wGameLabelRecord = Label(self.root, text=("Record: " + str(self.statusRecord)))
+        self.wGameLabelScore = Label(self.root, text=("Score:" + str(self.statusScore)), font= ("Zig"))
+        self.wGameLabelLife = Label(self.root, text=("LV{}  Life:".format(self.currentLv) + str(self.statusLife)), font= ("Zig"))
+        self.wGameLabelRecord = Label(self.root, text=("Record:" + str(self.statusRecord)), font= ("Zig"))
         self.wGameCanv = Canvas(width=800, height=600)
         self.wGameCanvLabelGetReady = self.wGameCanv.create_image(405, 327, image=None)
         self.wGameCanvLabelGameOver = self.wGameCanv.create_image(410, 327, image=None)
         self.wGameCanvLabelWin = self.wGameCanv.create_image(410, 327, image=None)
         self.wGameCanvObjects = [[self.wGameCanv.create_image(0, 0, image=None) for j in range(32)] for i in range(48)]
+        self.wGameCanvLives = [self.wGameCanv.create_image(0, 0, image=None) for j in range(5)]
         self.wGameCanv.config(background="black")
         self.wGameCanvMovingObjects = [self.wGameCanv.create_image(0, 0, image=None) for n in
                                        range(5)]  # 0: pacman, 1-4: ghosts
 
         # key binds for the game control
         self.root.bind('<Left>', self.inputResponseLeft)
-        self.root.bind('<A>', self.inputResponseLeft)
+        self.root.bind('a', self.inputResponseLeft)
         self.root.bind('<Right>', self.inputResponseRight)
-        self.root.bind('<D>', self.inputResponseRight)
+        self.root.bind('d', self.inputResponseRight)
         self.root.bind('<Up>', self.inputResponseUp)
-        self.root.bind('<W>', self.inputResponseUp)
+        self.root.bind('w', self.inputResponseUp)
         self.root.bind('<Down>', self.inputResponseDown)
-        self.root.bind('<S>', self.inputResponseDown)
+        self.root.bind('s', self.inputResponseDown)
         self.root.bind('<Escape>', self.inputResponseEsc)
         self.root.bind('<Return>', self.inputResponseReturn)
 
@@ -136,7 +150,8 @@ class Game(object):
         # self.root.mainloop()
 
         # call the next phase of initialization: level initialization
-        self.__initLevelOnce(1)
+        aimaze.newMaze.randomFlag = randint(1, 2)
+        self.__initLevelOnce(self.currentLv)
         self.root.mainloop()
 
     def __initLevelSelect(self):
@@ -163,6 +178,7 @@ class Game(object):
     def __initLevelOnce(self, level):
         ## this function will be called only once
 
+        self.randomFlag = randint(1, 5)
         self.__initLevel(level)
 
         # removing level selection features
@@ -171,9 +187,9 @@ class Game(object):
         # self.wLvBtn.destroy()
         # place the canvas and set isPlaying True
         self.wGameCanv.place(x=0, y=30)
-        self.wGameLabelScore.place(x=10, y=5)
-        self.wGameLabelRecord.place(x=350, y=5)
-        self.wGameLabelLife.place(x=750, y=5)
+        self.wGameLabelScore.place(x=5, y=5)
+        self.wGameLabelRecord.place(x=210, y=5)
+        self.wGameLabelLife.place(x=615, y=5)
 
     def __initLevel(self, level):
 
@@ -181,6 +197,8 @@ class Game(object):
         aimaze.newMaze.load_maze(level)  # generate selected/passed level
         #self.wGameCanvObjects = [[self.wGameCanv.create_image(0, 0, image=None) for j in range(32)] for i in range(48)]
 
+        self.wSprites.update({'wall': PhotoImage(file="resources/graphics/wall{}.png".format(self.randomFlag))})
+        self.wGameLabelLife.configure(text=("LV{}  Life:".format(self.currentLv) + str(self.statusLife)), font=("Zig"))
         # check the name of the object and bind the sprite, adjust their coordinate
         for j in range(32):
             for i in range(48):
@@ -230,6 +248,12 @@ class Game(object):
                     else:
                         pass
 
+        for i in range(5):
+            if i <= self.statusLife and i > 0:
+                self.wGameCanv.itemconfig(self.wGameCanvLives[i], image=self.wSprites['lives'],
+                                          state='normal')
+                self.wGameCanv.coords(self.wGameCanvLives[i], 3 + i * 17 + 8, 30 + 32 * 17 + 8)
+
         # bind the sprite and give it current coord. for pacman
         self.wGameCanv.coords(self.wGameCanvMovingObjects[0],
                               3 + aimaze.newMaze.movingObjectPacman.coordinateRel[0] * 17 + 8,
@@ -247,7 +271,7 @@ class Game(object):
 
         # advance to next phase: get ready!
         pygame.mixer.music.stop()
-        pygame.mixer.music.load("resources/audio/intro.wav")
+        pygame.mixer.music.load("resources/audio/sound_intro.mp3")
         pygame.mixer.music.play(loops=0, start=0.0)
         self.isLevelGenerated = True
         self.timerReady = PerpetualTimer(0.55, self.__initLevelStarting)
@@ -268,12 +292,13 @@ class Game(object):
     def inputResponseEsc(self, event):
         self.timerLoop.stop()
         pygame.mixer.music.stop()
-        messagebox.showinfo("Game Over!", "You hit the escape key!")
+        messagebox.showinfo("Game Over!", "You hit the escape key!\nWill quit after click")
+        self.root.quit()
 
     def inputResponseReturn(self, event):
-        # skip feature
-        if self.isLevelGenerated == True and self.isPlaying == False:
-            self.gameStartingTrigger()
+        # return to homepage
+        if self.gameOverFlag == True:
+            self.root.quit()
         else:
             pass
 
@@ -303,7 +328,8 @@ class Game(object):
 
         # ghost sound as music
         pygame.mixer.music.stop()
-        pygame.mixer.music.load("resources/audio/bgm.wav")
+        self.randomFlagBGM = randint(1, 4)
+        pygame.mixer.music.load("resources/audio/bgm{}.wav".format(self.randomFlagBGM+1))
         pygame.mixer.music.play(-1)
 
         self.timerLoop = PerpetualTimer(0.045, self.loopFunction)
@@ -662,7 +688,13 @@ class Game(object):
 
                     # get plenty of score
                     self.statusScore += 100  # adjust the score
-                    self.wGameLabelScore.configure(text=("Score: " + str(self.statusScore)))  # showing on the board
+                    if self.statusScore > self.statusRecord:
+                        self.statusRecord = self.statusScore
+                    self.wGameLabelScore.configure(text=("Score:" + str(self.statusScore)),
+                                                   font=("Zig"))  # showing on the board
+                    if self.statusRecord == self.statusScore:
+                        self.wGameLabelRecord.configure(text=("Record:" + str(self.statusRecord)), font=("Zig"),
+                                                        fg="red")  # showing on the board
 
                     # reset the ghost
                     # adjust current coordinate
@@ -696,7 +728,13 @@ class Game(object):
                         self.wSounds['chomp2'].play(loops=0)
 
                     self.statusScore += 10  # adjust the score
-                    self.wGameLabelScore.configure(text=("Score: " + str(self.statusScore)))  # showing on the board
+                    if self.statusScore > self.statusRecord:
+                        self.statusRecord = self.statusScore
+                    self.wGameLabelScore.configure(text=("Score:" + str(self.statusScore)),
+                                                   font=("Zig"))  # showing on the board
+                    if self.statusRecord == self.statusScore:
+                        self.wGameLabelRecord.configure(
+                            text=("Record:" + str(self.statusRecord)), font=("Zig"), fg="red")  # showing on the board
                     aimaze.newMaze.levelPelletRemaining -= 1  # adjust the remaining pellet numbers
 
                     if aimaze.newMaze.levelPelletRemaining == 0:
@@ -717,7 +755,13 @@ class Game(object):
                     self.wSounds['eat_power'].play(loops=0)
 
                     self.statusScore += 50  # adjust the score
-                    self.wGameLabelScore.configure(text=("Score: " + str(self.statusScore)))  # showing on the board
+                    if self.statusScore > self.statusRecord:
+                        self.statusRecord = self.statusScore
+                    self.wGameLabelScore.configure(text=("Score:" + str(self.statusScore)),
+                                                   font=("Zig"))  # showing on the board
+                    if self.statusRecord == self.statusScore:
+                        self.wGameLabelRecord.configure(
+                            text=("Record:" + str(self.statusRecord)), font=("Zig"), fg="red")  # showing on the board
                     aimaze.newMaze.levelPelletRemaining -= 1  # adjust the remaining pellet numbers
 
                     if aimaze.newMaze.levelPelletRemaining == 0:
@@ -746,9 +790,14 @@ class Game(object):
                             # play the sound
                             self.wSounds['eat_fruit'].play(loops=0)
 
-                            self.statusScore += 20 + i * 10  # adjust the score
+                            self.statusScore += 50 + i * 10  # adjust the score
+                            if self.statusScore > self.statusRecord:
+                                self.statusRecord = self.statusScore
                             self.wGameLabelScore.configure(
-                                text=("Score: " + str(self.statusScore)))  # showing on the board
+                                text=("Score:" + str(self.statusScore)), font=("Zig"))  # showing on the board
+                            if self.statusRecord == self.statusScore:
+                                self.wGameLabelRecord.configure(
+                                    text=("Record:" + str(self.statusRecord)), font=("Zig"), fg="red")  # showing on the board
                             # maze.newMaze.levelPelletRemaining -= 1  # adjust the remaining pellet numbers
 
                             if aimaze.newMaze.levelPelletRemaining == 0:
@@ -780,8 +829,8 @@ class Game(object):
 
         if self.statusFinishTimer < 9:
             # wall blinking function
-            if self.statusFinishTimer % 3 == 1:
-                self.wSprites.update({'wall': PhotoImage(file="resources/graphics/wall2.png")})
+            if self.statusFinishTimer % 2 == 1:
+                self.wSprites.update({'wall': PhotoImage(file="resources/graphics/wall7.png")})
                 for j in range(32):
                     for i in range(48):
                         if aimaze.newMaze.levelObjects[i][j].name == "wall":
@@ -808,7 +857,7 @@ class Game(object):
         for j in range(32):
             for i in range(48):
                 aimaze.newMaze.levelObjects[i][j].reset('')
-                # self.wGameCanv.itemconfigure(self.wGameCanvObjects[i][j], state='hidden')
+                self.wGameCanv.itemconfigure(self.wGameCanvObjects[i][j], state='hidden')
 
         aimaze.newMaze.movingObjectPacman.reset('Pacman')
 
@@ -823,14 +872,19 @@ class Game(object):
             self.winTimer.start()
         else:
             self.isLevelGenerated = False
+            self.randomFlag = randint(1, 5)
+            self.wGameCanvObjects = [[self.wGameCanv.create_image(0, 0, image=None) for j in range(32)] for i in
+                                     range(48)]
+            aimaze.newMaze.randomFlag = randint(1, 2)
             self.__initLevel(self.currentLv)
 
     def encounterEventDead(self):
-
+        self.wGameCanv.itemconfig(self.wGameCanvLives[self.statusLife], image=self.wSprites['lives'],
+                                  state='hidden')
         self.statusLife -= 1  # subtract remaining life
 
         if self.statusLife >= 0:
-            self.wGameLabelLife.configure(text=("Life: " + str(self.statusLife)))  # showing on the board
+            self.wGameLabelLife.configure(text=("LV{}  Life:".format(self.currentLv) + str(self.statusLife)), font= ("Zig"))  # showing on the board
         else:  # prevent showing minus life (will be game over anyway)
             pass
 
@@ -900,6 +954,7 @@ class Game(object):
 
         else:  # after 8 loop, the game is completely finished
             self.gameOverTimer.stop()
+            self.gameOverFlag = True
 
     def encounterEventWin(self):
         self.statusWinTimer += 1
@@ -914,6 +969,7 @@ class Game(object):
 
         else:  # after 8 loop, the game is completely finished
             self.winTimer.stop()
+            self.gameOverFlag = True
 
 
 class PerpetualTimer(object):
@@ -946,4 +1002,6 @@ pygame.mixer.init(22050, -16, 2, 64)
 pygame.init()
 
 # start the game
-newGame = Game()
+newGame = Game(0)
+#print("Game over! AI's record: {}".format(newGame.run()))
+#print("AI's score: {}".format(newGame.statusScore))

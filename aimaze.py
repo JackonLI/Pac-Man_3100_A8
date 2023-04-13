@@ -14,13 +14,23 @@ class Maze(object):
         self.movingObjectAI = movingObject("AI")
         self.levelObjectNamesBlocker = ["wall", "cage"]
         self.levelObjectNamesPassable = ["empty", "pellet", "power", "fruit0", "fruit1", "fruit2"]  # add in the future
+        self.randomFlag = randint(1, 2)
 
 
     def load_maze(self, level):
         #if not self.path:
             #return
         pathCurrentDir = os.path.dirname(__file__)
-        pathRelDir = "./resources/maze/level{}.txt".format(level)
+        pathRelDir = ''
+        if level < 3:
+            pathRelDir = "./resources/maze/levelmini{}.txt".format(2 * (level - 1) + self.randomFlag)
+        elif level < 5:
+            pathRelDir = "./resources/maze/level{}.txt".format(2 * (level - 3) + self.randomFlag)
+        elif level == 5:
+            pathRelDir = "./resources/maze/level5.txt"
+        elif level == 6:
+            pathRelDir = "./resources/maze/levelbonus.txt"
+
         pathAbsDir = os.path.join(pathCurrentDir, pathRelDir)
 
         levelFile = open(pathAbsDir, encoding="utf-8")

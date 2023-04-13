@@ -125,7 +125,7 @@ class Game(object):
         self.wGameCanv = Canvas(width=800, height=600)
         self.wGameCanvLabelGetReady = self.wGameCanv.create_image(405, 327, image=None)
         self.wGameCanvLabelGameOver = self.wGameCanv.create_image(410, 327, image=None)
-        self.wGameCanvLabelWin = self.wGameCanv.create_image(400, 300, image=None)
+        self.wGameCanvLabelWin = self.wGameCanv.create_image(410, 327, image=None)
         self.wGameCanvObjects = [[self.wGameCanv.create_image(0, 0, image=None) for j in range(32)] for i in range(48)]
         self.wGameCanvLives = [self.wGameCanv.create_image(0, 0, image=None) for j in range(5)]
         self.wGameCanv.config(background="black")
@@ -197,7 +197,6 @@ class Game(object):
 
         self.wSprites.update({'wall': PhotoImage(file="resources/graphics/wall{}.png".format(self.randomFlag))})
         self.wGameLabelLife.configure(text=("LV{}  Life:".format(self.currentLv) + str(self.statusLife)), font= ("Zig"))
-
         # check the name of the object and bind the sprite, adjust their coordinate
         for j in range(32):
             for i in range(48):
@@ -793,7 +792,7 @@ class Game(object):
                                 text=("Score:" + str(self.statusScore)), font= ("Zig"))  # showing on the board
                             if self.statusRecord == self.statusScore:
                                 self.wGameLabelRecord.configure(
-                                    text=("New Record:" + str(self.statusRecord)), font= ("Zig"))  # showing on the board
+                                    text=("Record:" + str(self.statusRecord)), font= ("Zig"), fg="red")  # showing on the board
                             # maze.newMaze.levelPelletRemaining -= 1  # adjust the remaining pellet numbers
 
                             if maze.newMaze.levelPelletRemaining == 0:
@@ -875,7 +874,6 @@ class Game(object):
             self.__initLevel(self.currentLv)
 
     def encounterEventDead(self):
-
         self.wGameCanv.itemconfig(self.wGameCanvLives[self.statusLife], image=self.wSprites['lives'],
                                   state='hidden')
         self.statusLife -= 1  # subtract remaining life
