@@ -6,16 +6,18 @@ from pygame.locals import *
 
 GREY = (240, 248, 255)
 PURPLE = (153, 102, 204)
-SCREENSIZE = [700, 500]
+SCREENSIZE = [900, 500]
 
 
 class Homepage(object):
-    def __init__(self, name, score):
+    def __init__(self, name, score, rank_list):
         self.name = name
         self.score = score
-        
+        self.rank_list = rank_list
+        self.flag = 0
+
     def update_info(self):
-        return self.name, self.score
+        return self.name, self.score, self.flag
  
     def draw_text(self, text, font, color, surface, x, y):
         textobj = font.render(text, 1, color)
@@ -26,12 +28,12 @@ class Homepage(object):
     def main_menu(self):
         pygame.init()
         pygame.display.set_caption('Homepage')
-        screen = pygame.display.set_mode((700, 500),0)
-        SIZE = (700, 500)
+        screen = pygame.display.set_mode((900, 500),0)
+        SIZE = (900, 500)
         font = pygame.font.SysFont(None, 30)
-            
-            
-        scores = [("Alice", 100), ("Bob", 200), ("Charlie", 150), ("David", 50), ("David", 50), ("David", 50), ("David", 50), ("David", 50), ("David", 50), ("David", 50)]
+        pygame.mixer.music.load("resources/audio/bgm.wav")
+        pygame.mixer.music.play(-1)
+
         snow_list = []
         for i in range(200):
             x = random.randrange(0, SIZE[0])
@@ -43,19 +45,19 @@ class Homepage(object):
         clock = pygame.time.Clock()
         click = False
         while True:
-    
             screen.fill((151,255,255))
-            self.draw_text('Main Menu', font, (0,0,0), screen, 300, 40)
-    
+            self.draw_text('Main Menu', font, (0,0,0), screen, 400, 40)
+            self.draw_text('Username: '+ self.name, font, (255,106,106), screen, 50, 50)
+            self.draw_text('Highest score: '+ str(self.score), font, (255,106,106), screen, 50, 100)
             mx, my = pygame.mouse.get_pos()
 
             #creating buttons
-            button_1 = pygame.Rect(260, 80, 180, 50)
-            button_2 = pygame.Rect(260, 150, 180, 50)
-            button_3 = pygame.Rect(260, 220, 180, 50)
-            button_4 = pygame.Rect(260, 290, 180, 50)
-            button_5 = pygame.Rect(260, 360, 180, 50)
-            button_6 = pygame.Rect(260, 430, 180, 50)
+            button_1 = pygame.Rect(360, 80, 180, 50)
+            button_2 = pygame.Rect(360, 150, 180, 50)
+            button_3 = pygame.Rect(360, 220, 180, 50)
+            button_4 = pygame.Rect(360, 290, 180, 50)
+            button_5 = pygame.Rect(360, 360, 180, 50)
+            button_6 = pygame.Rect(360, 430, 180, 50)
             
             
             #defining functions when a certain button is pressed
@@ -67,16 +69,22 @@ class Homepage(object):
                     self.game()
             if button_3.collidepoint((mx, my)):
                 if click:
-                    self.rankList(scores)
+                    screen = pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)
+                    self.rankList(self.rank_list)
+                    screen = pygame.display.set_mode((900, 500), flags=pygame.SHOWN)
             if button_4.collidepoint((mx, my)):
                 if click:
+                    screen = pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)
                     self.setting()
+                    screen = pygame.display.set_mode((900, 500), flags=pygame.SHOWN)
             if button_5.collidepoint((mx, my)):
                 if click:
-                    help()
+                    screen = pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)
+                    self.help()
+                    screen = pygame.display.set_mode((900, 500), flags=pygame.SHOWN)
             if button_6.collidepoint((mx, my)):
                 if click:
-                    Login()
+                    return
             pygame.draw.rect(screen, (151,255,255), button_1)
             pygame.draw.rect(screen, (151,255,255), button_2)
             pygame.draw.rect(screen, (151,255,255), button_3)
@@ -87,12 +95,12 @@ class Homepage(object):
             
     
             #writing text on top of button
-            self.draw_text('BASIC GAME', font, (255,105,180), screen, 284, 98)
-            self.draw_text('AI GAME', font, (255,110,180), screen, 305, 168)
-            self.draw_text('RANK LIST', font, (238,106,167), screen, 295, 238)
-            self.draw_text('SETTING', font, (205,96,144), screen, 305, 308)
-            self.draw_text('HELP', font, (139,58,98), screen, 322, 378)
-            self.draw_text('BACK TO LOGOUT', font, (205,92,92), screen, 260, 448)
+            self.draw_text('BASIC GAME', font, (255,105,180), screen, 384, 98)
+            self.draw_text('AI GAME', font, (255,110,180), screen, 405, 168)
+            self.draw_text('RANK LIST', font, (238,106,167), screen, 395, 238)
+            self.draw_text('SETTING', font, (205,96,144), screen, 405, 308)
+            self.draw_text('HELP', font, (139,58,98), screen, 422, 378)
+            self.draw_text('BACK TO LOGOUT', font, (205,92,92), screen, 360, 448)
             
             
             for i in range(len(snow_list)):
@@ -129,19 +137,20 @@ class Homepage(object):
     This function is called when the "PLAY" button is clicked.
     """
     def game(self):
-        newGame = game.Game(500)
+        newGame = game.Game(self.score)
         #pygame.display.iconify()
         screen = pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)
         newGame.run()
         print("Score: {}".format(newGame.statusScore))
         print("New high score: {}".format(newGame.statusRecord))
+        self.score = newGame.statusRecord
         newGame.close()
-        screen = pygame.display.set_mode((700, 500), flags=pygame.SHOWN)
-        #newHomepage.main_menu()
+        screen = pygame.display.set_mode((900, 500), flags=pygame.SHOWN)
+        #self.main_menu()
 
     def rankList(self, scores):
         pygame.init()
-        screen = pygame.display.set_mode((700, 500))
+        screen = pygame.display.set_mode((900, 500))
         screen.fill((255,228,196))
         pygame.display.set_caption('RANK LIST')
 
@@ -161,13 +170,13 @@ class Homepage(object):
 
         # Run the Pygame event loop
         while True:
-            button_1 = pygame.Rect(500, 430, 180, 50)
+            button_1 = pygame.Rect(350, 430, 180, 50)
             mx, my = pygame.mouse.get_pos()
             if button_1.collidepoint((mx, my)):
                 if click:
-                    self.main_menu()
+                    return
             pygame.draw.rect(screen, (255,228,196), button_1)
-            self.draw_text('BACK TO MENU', font, (255,106,106), screen, 520, 442)
+            self.draw_text('BACK TO MENU', font, (255,106,106), screen, 365, 442)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -181,12 +190,10 @@ class Homepage(object):
         pygame.init()
         pygame.display.set_caption('SETTING')
         # Set up the display
-        screen = pygame.display.set_mode((700, 500))
+        screen = pygame.display.set_mode((900, 500))
 
         # Load the initial background music
-        initial_bg_music = "bg_music.mp3"
-        pygame.mixer.music.load(initial_bg_music)
-        pygame.mixer.music.play()
+        initial_bg_music = "resources/audio/bgm.wav"
 
         # Set up the font
         font = pygame.font.SysFont(None, 32)
@@ -201,6 +208,7 @@ class Homepage(object):
 
         # Set up the warning message timer
         warning_timer = 0
+        hint_timer = 0
 
         # Set up the current music file variable
         current_music_file = initial_bg_music
@@ -210,13 +218,21 @@ class Homepage(object):
         click = False
         while running:
             screen.fill((255,228,196))
-            button_1 = pygame.Rect(250, 420, 200, 60)
+            button_1 = pygame.Rect(500, 420, 200, 60)
+            button_2= pygame.Rect(200, 420, 200, 60)
             mx, my = pygame.mouse.get_pos()
             if button_1.collidepoint((mx, my)):
                 if click:
-                    self.main_menu()
+                    return
+            if button_2.collidepoint((mx, my)):
+                if click:
+                    hint_timer = 1200
+                    self.flag = 1
+                    self.score = 0
             pygame.draw.rect(screen, (255,228,196), button_1)
-            self.draw_text('BACK TO MENU', font, (255,106,106), screen, 265, 442)
+            pygame.draw.rect(screen, (255,228,196), button_2)
+            self.draw_text('BACK TO MENU', font, (255,106,106), screen, 515, 442)
+            self.draw_text('CLEAR SCORE', font, (255,106,106), screen, 215, 442)
             click = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -226,10 +242,11 @@ class Homepage(object):
                         running = False
                     elif event.key == pygame.K_RETURN:
                         # Check if the input text is a valid music file name
-                        if input_text.endswith(".mp3") and os.path.isfile(input_text):
+                        if input_text.endswith(".wav") and os.path.isfile("resources/audio/" + input_text):
                             # Change the background music to the user's input
                             try:
                                 pygame.mixer.music.stop()
+                                input_text = "resources/audio/" + input_text
                                 pygame.mixer.music.load(input_text)
                                 pygame.mixer.music.play()
                                 current_music_file = input_text  # Update the current music file variable
@@ -240,8 +257,7 @@ class Homepage(object):
                                 print("Music file changed to:", input_text)
                         else:
                             print("Invalid music file name.")
-                            warning_text = font.render("Invalid file name!", True, (255, 0, 0))
-                            warning_timer = 120  # Set the warning timer to 120 frames (2 seconds)
+                            warning_timer = 600  # Set the warning timer to 120 frames (2 seconds)
                         
                         # Clear the input box
                         input_text = ""
@@ -285,6 +301,13 @@ class Homepage(object):
                 warning_timer -= 1
             elif 'warning_text' in locals():
                 del warning_text
+            
+            if hint_timer > 0:
+                hint_text = font.render("Clear your score successfully!", True, (255, 0, 0))
+                screen.blit(hint_text, (150, 390))
+                hint_timer -= 1
+            elif 'hint_text' in locals():
+                del hint_text
 
             # Update the screen
             pygame.display.flip()
@@ -303,13 +326,13 @@ class Homepage(object):
         click = False
         while running:
             screen.fill(GREY)
-            button_1 = pygame.Rect(250, 420, 200, 60)
+            button_1 = pygame.Rect(350, 420, 200, 60)
             mx, my = pygame.mouse.get_pos()
             if button_1.collidepoint((mx, my)):
                 if click:
-                    self.main_menu()
+                    return
             pygame.draw.rect(screen, GREY, button_1)
-            self.draw_text('BACK TO MENU', font_regular, (255,106,106), screen, 270, 442)
+            self.draw_text('BACK TO MENU', font_regular, (255,106,106), screen, 365, 442)
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
@@ -330,6 +353,6 @@ class Homepage(object):
             pygame.display.flip()
             mainClock.tick(60)
 
-newHomepage = Homepage(123, 456)
-newHomepage.main_menu()
+#newHomepage = Homepage(123, 456, [])
+#newHomepage.main_menu()
 
