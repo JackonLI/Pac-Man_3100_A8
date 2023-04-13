@@ -1,6 +1,8 @@
 import os
 import pygame, sys, random
 import game
+import aigame
+import multiplayergame as mg
 mainClock = pygame.time.Clock()
 from pygame.locals import *
 
@@ -30,9 +32,12 @@ class Homepage(object):
         pygame.display.set_caption('Homepage')
         screen = pygame.display.set_mode((900, 500),0)
         SIZE = (900, 500)
-        font = pygame.font.SysFont(None, 30)
+        font = pygame.font.Font('zig_____.ttf', 20)
+        font2 = pygame.font.Font('zig_____.ttf', 15)
         pygame.mixer.music.load("resources/audio/bgm.wav")
         pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.2)
+
 
         snow_list = []
         for i in range(200):
@@ -47,17 +52,23 @@ class Homepage(object):
         while True:
             screen.fill((151,255,255))
             self.draw_text('Main Menu', font, (0,0,0), screen, 400, 40)
-            self.draw_text('Username: '+ self.name, font, (255,106,106), screen, 50, 50)
-            self.draw_text('Highest score: '+ str(self.score), font, (255,106,106), screen, 50, 100)
+            bg_image = pygame.image.load("homepagebg.png")
+            bg_image = pygame.transform.scale(bg_image, (900, 500))
+            screen.blit(bg_image, (0, 0))
+            self.draw_text('Username: '+ str(self.name), font2, (255,106,106), screen, 30, 450)
+            self.draw_text('Score: '+ str(self.score), font2, (255,106,106), screen, 715, 450)
             mx, my = pygame.mouse.get_pos()
 
             #creating buttons
-            button_1 = pygame.Rect(360, 80, 180, 50)
-            button_2 = pygame.Rect(360, 150, 180, 50)
-            button_3 = pygame.Rect(360, 220, 180, 50)
-            button_4 = pygame.Rect(360, 290, 180, 50)
-            button_5 = pygame.Rect(360, 360, 180, 50)
-            button_6 = pygame.Rect(360, 430, 180, 50)
+            button_1 = pygame.Rect(200, 150, 180, 50)
+            button_2 = pygame.Rect(520, 150, 180, 50)
+            button_3 = pygame.Rect(200, 244, 180, 50)
+            button_4 = pygame.Rect(520, 244, 180, 50)
+            button_5 = pygame.Rect(200, 338, 180, 50)
+            button_6 = pygame.Rect(520, 338, 180, 50)
+            button_7 = pygame.Rect(340, 432, 180, 50)
+
+            
             
             
             #defining functions when a certain button is pressed
@@ -66,41 +77,47 @@ class Homepage(object):
                     self.game()
             if button_2.collidepoint((mx, my)):
                 if click:
-                    self.game()
+                    self.aigame()
             if button_3.collidepoint((mx, my)):
+                if click:
+                    self.mutigame()
+            if button_4.collidepoint((mx, my)):
                 if click:
                     screen = pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)
                     self.rankList(self.rank_list)
                     screen = pygame.display.set_mode((900, 500), flags=pygame.SHOWN)
-            if button_4.collidepoint((mx, my)):
+            if button_5.collidepoint((mx, my)):
                 if click:
                     screen = pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)
                     self.setting()
                     screen = pygame.display.set_mode((900, 500), flags=pygame.SHOWN)
-            if button_5.collidepoint((mx, my)):
+            if button_6.collidepoint((mx, my)):
                 if click:
                     screen = pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)
                     self.help()
                     screen = pygame.display.set_mode((900, 500), flags=pygame.SHOWN)
-            if button_6.collidepoint((mx, my)):
+            if button_7.collidepoint((mx, my)):
                 if click:
                     return
-            pygame.draw.rect(screen, (151,255,255), button_1)
-            pygame.draw.rect(screen, (151,255,255), button_2)
-            pygame.draw.rect(screen, (151,255,255), button_3)
-            pygame.draw.rect(screen, (151,255,255), button_4)
-            pygame.draw.rect(screen, (151,255,255), button_5)
-            pygame.draw.rect(screen, (151,255,255), button_6)
+            pygame.draw.rect(screen, (0,0,0), button_1)
+            pygame.draw.rect(screen, (0,0,0), button_2)
+            pygame.draw.rect(screen, (0,0,0), button_3)
+            pygame.draw.rect(screen, (0,0,0), button_4)
+            pygame.draw.rect(screen, (0,0,0), button_5)
+            pygame.draw.rect(screen, (0,0,0), button_6)
+            pygame.draw.rect(screen, (0,0,0), button_7)
+
             
             
     
             #writing text on top of button
-            self.draw_text('BASIC GAME', font, (255,105,180), screen, 384, 98)
-            self.draw_text('AI GAME', font, (255,110,180), screen, 405, 168)
-            self.draw_text('RANK LIST', font, (238,106,167), screen, 395, 238)
-            self.draw_text('SETTING', font, (205,96,144), screen, 405, 308)
-            self.draw_text('HELP', font, (139,58,98), screen, 422, 378)
-            self.draw_text('BACK TO LOGOUT', font, (205,92,92), screen, 360, 448)
+            self.draw_text('CLASSIC GAME', font, (255,105,180), screen, 213, 167)
+            self.draw_text('AI GAME', font, (255,110,180), screen, 563, 167)
+            self.draw_text('MUTIPLAYER GAME', font, (255,110,180), screen, 192, 261)
+            self.draw_text('RANK LIST', font, (238,106,167), screen, 555, 261)
+            self.draw_text('SETTING', font, (205,96,144), screen, 243, 355)
+            self.draw_text('HELP', font, (139,58,98), screen, 583, 355)
+            self.draw_text('BACK TO LOGOUT', font, (205,92,92), screen, 340, 448)
             
             
             for i in range(len(snow_list)):
@@ -128,7 +145,6 @@ class Homepage(object):
                 if event.type == MOUSEBUTTONDOWN:
                     if event.button == 1:
                         click = True
-    
             pygame.display.flip()
             mainClock.tick(60)
             clock.tick(20)
@@ -145,8 +161,39 @@ class Homepage(object):
         print("New high score: {}".format(newGame.statusRecord))
         self.score = newGame.statusRecord
         newGame.close()
+        for i in self.rank_list:
+            if i[0] == self.name:
+                self.rank_list.remove((i[0],i[1]))
+        if len(self.rank_list) >= 10:
+            index = 0
+            for tuple in self.rank_list:
+                if tuple[1] >= self.score:
+                    index += 1
+            if index < 10:
+                self.rank_list.insert(index, (self.name, self.score))
+                self.rank_list.pop()
+        else:
+            index = 0
+            for tuple in self.rank_list:
+                if tuple[1] >= self.score:
+                    index += 1
+            self.rank_list.insert(index, (self.name, self.score))
         screen = pygame.display.set_mode((900, 500), flags=pygame.SHOWN)
         #self.main_menu()
+
+    def aigame(self):
+        newGame = aigame.Game()
+        screen = pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)
+        newGame.run()
+        newGame.close()
+        screen = pygame.display.set_mode((900, 500), flags=pygame.SHOWN)
+    
+    def mutigame(self):
+        newMutiGame = mg.Game(0)
+        screen = pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)
+        newMutiGame.run()
+        newMutiGame.close()
+        screen = pygame.display.set_mode((900, 500), flags=pygame.SHOWN)
 
     def rankList(self, scores):
         pygame.init()
@@ -155,7 +202,7 @@ class Homepage(object):
         pygame.display.set_caption('RANK LIST')
 
         # Define the font and font size
-        font = pygame.font.SysFont(None, 30)
+        font = pygame.font.Font('zig_____.ttf', 20)
         click = False
         # Loop through the array and render each element to the screen
         for i, (name, score) in enumerate(scores):
@@ -196,19 +243,21 @@ class Homepage(object):
         initial_bg_music = "resources/audio/bgm.wav"
 
         # Set up the font
-        font = pygame.font.SysFont(None, 32)
+        font = pygame.font.Font('zig_____.ttf', 20)
 
         # Set up the initial volume
-        volume = 0.5
+        volume = 0.2
         pygame.mixer.music.set_volume(volume)
 
         # Set up the input box
-        input_box = pygame.Rect(180, 300, 200, 32)
+        input_box = pygame.Rect(180, 300, 200, 30)
         input_text = ""
 
         # Set up the warning message timer
         warning_timer = 0
         hint_timer = 0
+        hint_timer2 = 0
+
 
         # Set up the current music file variable
         current_music_file = initial_bg_music
@@ -216,6 +265,7 @@ class Homepage(object):
         # Main game loop
         running = True
         click = False
+        cnt = 0
         while running:
             screen.fill((255,228,196))
             button_1 = pygame.Rect(500, 420, 200, 60)
@@ -226,9 +276,15 @@ class Homepage(object):
                     return
             if button_2.collidepoint((mx, my)):
                 if click:
-                    hint_timer = 1200
-                    self.flag = 1
-                    self.score = 0
+                    cnt += 1
+                    if cnt == 2:
+                        hint_timer = 1200
+                        self.flag = 1
+                        self.score = 0
+                        cnt = 0
+                    elif cnt == 1:
+                        hint_timer2 = 1080
+
             pygame.draw.rect(screen, (255,228,196), button_1)
             pygame.draw.rect(screen, (255,228,196), button_2)
             self.draw_text('BACK TO MENU', font, (255,106,106), screen, 515, 442)
@@ -297,18 +353,24 @@ class Homepage(object):
             # Draw the warning message if necessary
             if warning_timer > 0:
                 warning_text = font.render("Invalid file name!", True, (255, 0, 0))
-                screen.blit(warning_text, (180, 340))
+                screen.blit(warning_text, (175, 340))
                 warning_timer -= 1
             elif 'warning_text' in locals():
                 del warning_text
             
             if hint_timer > 0:
                 hint_text = font.render("Clear your score successfully!", True, (255, 0, 0))
-                screen.blit(hint_text, (150, 390))
+                screen.blit(hint_text, (90, 390))
                 hint_timer -= 1
             elif 'hint_text' in locals():
                 del hint_text
 
+            if hint_timer2 > 0:
+                hint_text = font.render("Click it again to clear score!", True, (255, 0, 0))
+                screen.blit(hint_text, (90, 390))
+                hint_timer2 -= 1
+            elif 'hint_text' in locals():
+                del hint_text
             # Update the screen
             pygame.display.flip()
 
@@ -321,8 +383,8 @@ class Homepage(object):
         running = True
         content = [line.strip('\n')
                 for line in open('text.txt', 'r').readlines()]
-        font = pygame.font.SysFont(None, 20)
-        font_regular = pygame.font.SysFont(None, 30)
+        font = pygame.font.Font('zig_____.ttf', 20)
+        font_regular = pygame.font.Font('zig_____.ttf', 20)
         click = False
         while running:
             screen.fill(GREY)
@@ -353,6 +415,6 @@ class Homepage(object):
             pygame.display.flip()
             mainClock.tick(60)
 
-#newHomepage = Homepage(123, 456, [])
+#newHomepage = Homepage(123, 456123, [])
 #newHomepage.main_menu()
 

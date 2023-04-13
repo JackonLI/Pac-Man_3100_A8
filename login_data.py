@@ -13,8 +13,8 @@ BG_COLOR = (151, 255, 255)
 SCREEN_SIZE = (900, 500)
 
 # Fond
-FONT = pygame.font.Font(None, 32)
-font = pygame.font.Font(None, 32)
+FONT = pygame.font.Font('zig_____.ttf', 15)
+font = pygame.font.Font('zig_____.ttf', 15)
 # Database
 db = pymysql.connect(host="localhost", user="root", password="vw#5y#ub", database="records", charset="utf8")
 cursor = db.cursor()
@@ -29,8 +29,6 @@ def starting_interface():
     screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption('Login')
     screen.fill(BG_COLOR)
-    bg_image = pygame.image.load("back.png")
-    bg_image = pygame.transform.scale(bg_image, (900, 500))
     while True:
         bg_image = pygame.image.load("back.png")
         bg_image = pygame.transform.scale(bg_image, (900, 500))
@@ -42,9 +40,22 @@ def starting_interface():
                 if event.key == pygame.K_ESCAPE:
                     running = False
                 elif event.key == pygame.K_RETURN:
-                    Login()
+                    choose_start()
         screen.blit(bg_image, (0, 0))
         pygame.display.flip()
+
+def choose_start():
+    screen = pygame.display.set_mode(SCREEN_SIZE)
+    pygame.display.set_caption('Choose to start')
+    screen.fill(BG_COLOR)
+    choose = input_box(screen, "Type 1 for Login, 2 for Register", 200, 260)
+    if int(choose) == 1:
+        Login()
+    elif int(choose) == 2:
+        Register()
+    else:
+        choose_start() 
+
 
 
 def render_text(text, font, color=(255, 0, 0)):
@@ -54,7 +65,7 @@ def render_text(text, font, color=(255, 0, 0)):
 def input_box(screen, prompt, x, y):
     bg_image = pygame.image.load("back.png")
     bg_image = pygame.transform.scale(bg_image, (900, 500))
-    input_rect = pygame.Rect(x, y, 700, 32)
+    input_rect = pygame.Rect(x, y, 200, 24)
     color_inactive = pygame.Color('lightskyblue3')
     color_active = pygame.Color('dodgerblue2')
     active = False
@@ -91,7 +102,6 @@ def input_box(screen, prompt, x, y):
 
         text_surface, text_rect = render_text(text, FONT)
         text_rect.topleft = (x + 5, y + 5)
-        input_rect.w = max(100, text_rect.width + 10)
         screen.blit(text_surface, text_rect)
         pygame.draw.rect(screen, (255, 0, 0), input_rect, 2)
         pygame.display.flip()
@@ -102,23 +112,23 @@ def Register():
     screen1.fill(BG_COLOR)
 
     while True:
-        name = input_box(screen1, "Please enter the username you want to register with:", 230, 260)
+        name = input_box(screen1, "Please enter the username you want to register with:", 150, 260)
         cursor.execute('SELECT * FROM proj_db WHERE name = %s' % repr(name))
         result = cursor.fetchall()
         if len(result) > 0:
-            x = input_box(screen1, "The username already exists, 0 for register again ,1 for login", 230, 260)
-            if x == 0 :
+            x = input_box(screen1, "The username already exists, 0 for register again ,1 for login", 150, 260)
+            if int(x) == 0 :
                 Register()
             else:
                 Login()
         else:
-            pass1 = input_box(screen1, "Please input a password:", 230, 260)
-            pass2 = input_box(screen1, "Please confirm the password again:", 230, 260)
+            pass1 = input_box(screen1, "Please input a password:", 200, 260)
+            pass2 = input_box(screen1, "Please confirm the password again:", 200, 260)
             if pass1 == pass2 :
                 dic[name] = (pass1, 0)
                 Update_database(name)
-                y = input_box(screen1, "Registration successful, type 1 log in! else register\n", 230, 260)
-                if y == 1:
+                y = input_box(screen1, "Registration successful, type 1 log in! else register\n", 150, 260)
+                if y == "1":
                     Login()
                 else:
                     Register()
@@ -130,16 +140,16 @@ def Login():
     screen.fill(BG_COLOR)
 
     while True:
-        user_name = input_box(screen, "Click the inputbox and enter your username:", 230, 260)
+        user_name = input_box(screen, "Click the inputbox and enter your username:", 180, 260)
         cursor.execute('SELECT * FROM proj_db WHERE name = %s' % repr(user_name))
         result = cursor.fetchall()
         if len(result) > 0:
-            user_pass = input_box(screen, "Please input your password:", 230, 260)
+            user_pass = input_box(screen, "Please input your password:", 200, 260)
             cursor.execute('SELECT password FROM proj_db WHERE name = %s' % repr(user_name))
             pwd = cursor.fetchall()
             if user_pass == pwd[0][0]:
                 dic[user_name] = (user_pass, 0)
-                cont = input_box(screen, "Login successful!, type 1 to continue!(else login)", 230, 260)
+                cont = input_box(screen, "Login successful!, type 1 to continue!(else login)", 150, 260)
                 cursor.execute('SELECT score FROM proj_db WHERE name = %s' % repr(user_name))
                 score = cursor.fetchone()
                 if cont == '1':
@@ -158,14 +168,14 @@ def Login():
                 else:
                     Login()
             else:
-                cont = input_box(screen, "Password error, logged out!, type 1 to login(else register)", 230, 260)
+                cont = input_box(screen, "Password error, logged out!, type 1 to login(else register)", 150, 260)
                 if cont == '1':
                     Login()
                 else:
                     Register()
         elif len(result) == 0:
             #display_sentence(screen, "The user you entered does not exist!", 175, 200)
-            YN = input_box(screen, "Do you need to register a user (if registering, enter: 1  login , enter: 0): ", 130, 260)
+            YN = input_box(screen, "Do you need to register a user(if register,enter:1 login,enter:0): ", 70, 260)
             if YN == '1':
                 Register()
             else:
