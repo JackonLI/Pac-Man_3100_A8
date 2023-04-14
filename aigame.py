@@ -1002,6 +1002,6 @@ pygame.mixer.init(22050, -16, 2, 64)
 pygame.init()
 
 # start the game
-newGame = Game(0)
+#newGame = Game(0)
 #print("Game over! AI's record: {}".format(newGame.run()))
 #print("AI's score: {}".format(newGame.statusScore))
