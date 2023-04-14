@@ -41,7 +41,7 @@ class Game(object):
 
 
     def close(self):
-        self.root.destory()
+        self.root.destroy()
 
 
     def __initResource(self):
