@@ -52,7 +52,7 @@ class Homepage(object):
         while True:
             screen.fill((151,255,255))
             self.draw_text('Main Menu', font, (0,0,0), screen, 400, 40)
-            bg_image = pygame.image.load("homepagebg.png")
+            bg_image = pygame.image.load("resources/graphics/homepagebg.png")
             bg_image = pygame.transform.scale(bg_image, (900, 500))
             screen.blit(bg_image, (0, 0))
             self.draw_text('Username: '+ str(self.name), font2, (255,106,106), screen, 30, 450)
