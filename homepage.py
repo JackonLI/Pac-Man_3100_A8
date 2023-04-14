@@ -207,26 +207,23 @@ class Homepage(object):
         # Define the font and font size
         font = pygame.font.Font('zig_____.ttf', 20)
         click = False
-        # Loop through the array and render each element to the screen
         for i, (name, score) in enumerate(scores):
             text = f"{i+1}: {name} - {score}"
-            rendered_text = font.render(text, True, (255,127,0))
-            rect = rendered_text.get_rect()
-            rect.centerx = screen.get_rect().centerx
-            rect.y = i * 40 + 50
-            screen.blit(rendered_text, rect)
-
-        # Update the Pygame display
+            rendered_text = font.render(text, True, (255, 127, 0))
+            text_rect = rendered_text.get_rect()
+            text_rect.x = 50  # Set the left edge of the text rectangle to 50 pixels
+            text_rect.y = i * 40 + 50
+            screen.blit(rendered_text, text_rect)
 
         # Run the Pygame event loop
         while True:
-            button_1 = pygame.Rect(350, 430, 180, 50)
+            button_1 = pygame.Rect(650, 430, 180, 50)
             mx, my = pygame.mouse.get_pos()
             if button_1.collidepoint((mx, my)):
                 if click:
                     return
             pygame.draw.rect(screen, (255,228,196), button_1)
-            self.draw_text('BACK TO MENU', font, (255,106,106), screen, 365, 442)
+            self.draw_text('BACK TO MENU', font, (255,106,106), screen, 665, 442)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
