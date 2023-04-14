@@ -1170,6 +1170,6 @@ pygame.mixer.init(22050, -16, 2, 64)
 pygame.init()
 
 # start the game
-newGame = Game(500)
-print("Game over! Your record: {}".format(newGame.run()))
-print("Your score: {}".format(newGame.statusScore))
+#newGame = Game(500)
+#print("Game over! Your record: {}".format(newGame.run()))
+#print("Your score: {}".format(newGame.statusScore))
