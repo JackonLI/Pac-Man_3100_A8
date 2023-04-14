@@ -334,7 +334,6 @@ class Game(object):
         self.timerLoop.stop()
         pygame.mixer.music.stop()
         messagebox.showinfo("Game Over!", "You hit the escape key!\nWill quit after click")
-        time.sleep(5)
         self.root.quit()
 
     def inputResponseReturn(self, event):
