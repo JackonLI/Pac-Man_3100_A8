@@ -98,6 +98,7 @@ class Homepage(object):
                     screen = pygame.display.set_mode((900, 500), flags=pygame.SHOWN)
             if button_7.collidepoint((mx, my)):
                 if click:
+                    pygame.mixer.music.stop()
                     return
             pygame.draw.rect(screen, (0,0,0), button_1)
             pygame.draw.rect(screen, (0,0,0), button_2)
@@ -382,7 +383,7 @@ class Homepage(object):
         tickspeed = 60
         running = True
         content = [line.strip('\n')
-                for line in open('text.txt', 'r').readlines()]
+                for line in open('help.txt', 'r').readlines()]
         font = pygame.font.Font('zig_____.ttf', 15)
         font_regular = pygame.font.Font('zig_____.ttf', 20)
         click = False
