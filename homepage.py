@@ -34,7 +34,7 @@ class Homepage(object):
         SIZE = (900, 500)
         font = pygame.font.Font('zig_____.ttf', 20)
         font2 = pygame.font.Font('zig_____.ttf', 15)
-        pygame.mixer.music.load("resources/audio/bgm.wav")
+        pygame.mixer.music.load("homepage_bgm/bgm.mp3")
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.2)
 
@@ -241,7 +241,7 @@ class Homepage(object):
         screen = pygame.display.set_mode((900, 500))
 
         # Load the initial background music
-        initial_bg_music = "resources/audio/bgm.wav"
+        initial_bg_music = "homepage_bgm/bgm.mp3"
 
         # Set up the font
         font = pygame.font.Font('zig_____.ttf', 20)
@@ -299,11 +299,11 @@ class Homepage(object):
                         running = False
                     elif event.key == pygame.K_RETURN:
                         # Check if the input text is a valid music file name
-                        if input_text.endswith(".wav") and os.path.isfile("resources/audio/" + input_text):
+                        if input_text.endswith(".mp3") and os.path.isfile("homepage_bgm/" + input_text):
                             # Change the background music to the user's input
                             try:
                                 pygame.mixer.music.stop()
-                                input_text = "resources/audio/" + input_text
+                                input_text = "homepage_bgm/" + input_text
                                 pygame.mixer.music.load(input_text)
                                 pygame.mixer.music.play()
                                 current_music_file = input_text  # Update the current music file variable
