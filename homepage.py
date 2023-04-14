@@ -383,7 +383,7 @@ class Homepage(object):
         running = True
         content = [line.strip('\n')
                 for line in open('text.txt', 'r').readlines()]
-        font = pygame.font.Font('zig_____.ttf', 20)
+        font = pygame.font.Font('zig_____.ttf', 15)
         font_regular = pygame.font.Font('zig_____.ttf', 20)
         click = False
         while running:
@@ -406,12 +406,14 @@ class Homepage(object):
                 if event.type == MOUSEBUTTONDOWN:
                     if event.button == 1:
                         click = True
+            y = 10
             for n, line in enumerate(content):
                 text = font.render(line, 1, PURPLE)
                 text_rect = text.get_rect()
-                text_rect.centerx = SCREENSIZE[0]//2
-                text_rect.centery = n*25 + 50
+                text_rect.x = 15  # Set the left edge of the text rectangle to 50 pixels
+                text_rect.y = y
                 screen.blit(text, text_rect)
+                y += 22  # Increase the y-coordinate for the next line of text
             pygame.display.flip()
             mainClock.tick(60)
 
