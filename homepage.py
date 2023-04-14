@@ -159,7 +159,10 @@ class Homepage(object):
         newGame.run()
         print("Score: {}".format(newGame.statusScore))
         print("New high score: {}".format(newGame.statusRecord))
-        self.score = newGame.statusRecord
+        if newGame.statusScore > newGame.statusRecord:
+            self.score = newGame.statusScore
+        else:
+            self.score = newGame.statusRecord
         newGame.close()
         for i in self.rank_list:
             if i[0] == self.name:
