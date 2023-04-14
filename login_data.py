@@ -48,7 +48,7 @@ def choose_start():
     screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption('Choose to start')
     screen.fill(BG_COLOR)
-    choose = input_box(screen, "Type 1 for Login, 2 for Register", 200, 300)
+    choose = input_box(screen, "Type 1 for Login, 2 for Register", 200, 300, 1)
     if int(choose) == 1:
         Login()
     elif int(choose) == 2:
@@ -58,11 +58,15 @@ def choose_start():
 
 
 
-def render_text(text, font, color=(255, 0, 0)):
+def render_text1(text, font, color=(255, 0, 0)):
     text_surface = font.render(text, True, color)
     return text_surface, text_surface.get_rect()
 
-def input_box(screen, prompt, x, y):
+def render_text2(text, font, color=(102, 156, 255)):
+    text_surface = font.render(text, True, color)
+    return text_surface, text_surface.get_rect()
+
+def input_box(screen, prompt, x, y, c):
     bg_image = pygame.image.load("loginbg.png")
     bg_image = pygame.transform.scale(bg_image, (900, 500))
     input_rect = pygame.Rect(x, y, 200, 24)
@@ -92,19 +96,33 @@ def input_box(screen, prompt, x, y):
                         text = text[:-1]
                     else:
                         text += event.unicode
+                
+        if c == 1:
+            screen.fill(BG_COLOR)
+            prompt_surface, prompt_rect = render_text1(prompt, FONT)
+            screen.blit(bg_image, (0, 0))
+            prompt_rect.topleft = (x, y - 40)
+            screen.blit(prompt_surface, prompt_rect)
+            
 
-        screen.fill(BG_COLOR)
-        prompt_surface, prompt_rect = render_text(prompt, FONT)
-        screen.blit(bg_image, (0, 0))
-        prompt_rect.topleft = (x, y - 40)
-        screen.blit(prompt_surface, prompt_rect)
-        
+            text_surface, text_rect = render_text1(text, FONT)
+            text_rect.topleft = (x + 5, y + 5)
+            screen.blit(text_surface, text_rect)
+            pygame.draw.rect(screen, (255, 0, 0), input_rect, 2)
+            pygame.display.flip()
+        else:
+            screen.fill(BG_COLOR)
+            prompt_surface, prompt_rect = render_text2(prompt, FONT)
+            screen.blit(bg_image, (0, 0))
+            prompt_rect.topleft = (x, y - 40)
+            screen.blit(prompt_surface, prompt_rect)
+            
 
-        text_surface, text_rect = render_text(text, FONT)
-        text_rect.topleft = (x + 5, y + 5)
-        screen.blit(text_surface, text_rect)
-        pygame.draw.rect(screen, (255, 0, 0), input_rect, 2)
-        pygame.display.flip()
+            text_surface, text_rect = render_text2(text, FONT)
+            text_rect.topleft = (x + 5, y + 5)
+            screen.blit(text_surface, text_rect)
+            pygame.draw.rect(screen, (102, 156, 255), input_rect, 2)
+            pygame.display.flip()
 
 def Register():
     screen1 = pygame.display.set_mode(SCREEN_SIZE)
@@ -112,22 +130,22 @@ def Register():
     screen1.fill(BG_COLOR)
 
     while True:
-        name = input_box(screen1, "Please enter the username you want to register with:", 150, 300)
+        name = input_box(screen1, "Please enter the username you want to register with:", 150, 300, 2)
         cursor.execute('SELECT * FROM proj_db WHERE name = %s' % repr(name))
         result = cursor.fetchall()
         if len(result) > 0:
-            x = input_box(screen1, "The username already exists, 0 for register again ,1 for login", 150, 300)
+            x = input_box(screen1, "The username already exists, 0 for register again ,1 for login", 150, 300, 2)
             if int(x) == 0 :
                 Register()
             else:
                 Login()
         else:
-            pass1 = input_box(screen1, "Please input a password:", 200, 300)
-            pass2 = input_box(screen1, "Please confirm the password again:", 200, 300)
+            pass1 = input_box(screen1, "Please input a password:", 200, 300, 2)
+            pass2 = input_box(screen1, "Please confirm the password again:", 200, 300, 2)
             if pass1 == pass2 :
                 dic[name] = (pass1, 0)
                 Update_database(name)
-                y = input_box(screen1, "Registration successful, type 1 log in! else register\n", 150, 300)
+                y = input_box(screen1, "Registration successful, type 1 log in! else register\n", 150, 300, 2)
                 if y == "1":
                     Login()
                 else:
@@ -140,16 +158,16 @@ def Login():
     screen.fill(BG_COLOR)
 
     while True:
-        user_name = input_box(screen, "Click the inputbox and enter your username:", 180, 300)
+        user_name = input_box(screen, "Click the inputbox and enter your username:", 180, 300, 1)
         cursor.execute('SELECT * FROM proj_db WHERE name = %s' % repr(user_name))
         result = cursor.fetchall()
         if len(result) > 0:
-            user_pass = input_box(screen, "Please input your password:", 200, 300)
+            user_pass = input_box(screen, "Please input your password:", 200, 300, 1)
             cursor.execute('SELECT password FROM proj_db WHERE name = %s' % repr(user_name))
             pwd = cursor.fetchall()
             if user_pass == pwd[0][0]:
                 dic[user_name] = (user_pass, 0)
-                cont = input_box(screen, "Login successful!, type 1 to continue!(else login)", 150, 300)
+                cont = input_box(screen, "Login successful!, type 1 to continue!(else login)", 150, 300, 1)
                 cursor.execute('SELECT score FROM proj_db WHERE name = %s' % repr(user_name))
                 score = cursor.fetchone()
                 if cont == '1':
@@ -168,14 +186,14 @@ def Login():
                 else:
                     Login()
             else:
-                cont = input_box(screen, "Password error, logged out!, type 1 to login(else register)", 150, 300)
+                cont = input_box(screen, "Password error, logged out!, type 1 to login(else register)", 150, 300, 1)
                 if cont == '1':
                     Login()
                 else:
                     Register()
         elif len(result) == 0:
             #display_sentence(screen, "The user you entered does not exist!", 175, 200)
-            YN = input_box(screen, "Do you need to register a user(if register,enter:1 login,enter:0): ", 70, 300)
+            YN = input_box(screen, "Do you need to register a user(if register,enter:1 login,enter:0): ", 70, 300, 2)
             if YN == '1':
                 Register()
             else:
