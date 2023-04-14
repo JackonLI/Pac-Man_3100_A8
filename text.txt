@@ -1,0 +1,12 @@
+HELP
+1. The player moves Pac-Man through a maze to collect all the dots while avoiding ghosts.
+2. The ghosts roam the maze in specific patterns and will kill Pac-Man if they touch him.
+3. The four ghosts have different colors and names:Blinky (red),Pinky (pink),Inky (cyan),and Clyde (orange).
+4. Pac-Man can temporarily turn the tables on the ghosts by eating a power pellet,which turns the ghosts blue
+and allows Pac-Man to eat them for bonus points.
+5. There are also fruit that appear in the maze periodically that can be eaten for additional points.
+6. The game has a limited number of lives, and the player loses a life if Pac-Man is caught by a ghost.
+7. The game ends when all lives are lost.
+8. The player could see the rank list among the whole players.
+9. The player could change the background music by uploading their own music to "homepage_bgm" directory.
+10. The game also provides the ai player to play the classic game.
