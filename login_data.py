@@ -1,3 +1,27 @@
+
+"""
+Project: Pac-Man A8 in CSCI3100, CUHK
+Program: Generate homepage for user to choose mode
+Main Contributors: ZHANGJuyuan
+Created: March 28, 2023
+Last Modified: May 6, 2023
+Github Access: https://github.com/JackonLI/Pac-Man_3100_A8
+Description: 
+This program serves as the Start-code and database of the whole class. After the start command, the game will open the database and do identify part of user, then start game.
+Dependencies:
+- pygame and mysql
+- homepage.py
+How to use it:
+# you can modify the database function according to the database instruction guide on the github website and then start the game with your local database.
+Known issues:
+Each time you want to enter the input, you should click the input box because of the function limition
+If you can not type-in, you could check your inputting method, the input box only accept English
+Acknowledgement and References: 
+Bandai Namco Entertainment America Inc: https://www.bandainamcoent.com/games/pac-man
+Github project: https://github.com/greyblue9/pacman-python
+Github project: https://github.com/lylant/PacMan-Pygame
+"""
+
 import pygame
 import pymysql
 import sys
