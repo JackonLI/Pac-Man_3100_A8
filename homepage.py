@@ -1,3 +1,38 @@
+"""
+Project: Pac-Man A8 in CSCI3100, CUHK
+Program: Generate homepage for user to choose mode
+Main Contributors: Bao Wenrui
+Created: March 28, 2023
+Last Modified: May 5, 2023
+Github Access: https://github.com/JackonLI/Pac-Man_3100_A8
+
+Description: 
+This program serves as the homepage of the whole class. After log in, the user will see this page to set music or choose game mode.
+Classes: 
+- Game, which is the class for the whole game process; 
+- PerpetualTimer, which is a helper class for game status transition.
+
+Dependencies:
+- pygame and tkinter
+- game.py
+- aigame.py
+- mutiplayergame.py
+
+How to use it:
+# start homepage
+# newHomepage = Homepage(123, 456123, []) //create object with history highscore
+# newHomepage.main_menu() // access the homepage
+
+Known issues:
+During the homepage process, directly click the 'BACK TO LOGOUT' button to log in again. Please directly click the x button at the right-upper corner to exit directly.
+
+Acknowledgement and References: 
+Bandai Namco Entertainment America Inc: https://www.bandainamcoent.com/games/pac-man
+Github project: https://github.com/greyblue9/pacman-python
+Github project: https://github.com/lylant/PacMan-Pygame
+"""
+
+
 import os
 import pygame, sys, random
 import game
