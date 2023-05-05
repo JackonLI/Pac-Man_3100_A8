@@ -1,3 +1,38 @@
+"""
+Project: Pac-Man A8 in CSCI3100, CUHK
+Program: Game engine for classic mode game
+Main Contributors: Jianqiang LI, Yuan BAI
+Created: March 28, 2023
+Last Modified: May 5, 2023
+Github Access: https://github.com/JackonLI/Pac-Man_3100_A8
+
+Description: 
+This program serves as the game engine of the multiplayer mode game. For fun mode, we won't care user's highscore and it will be set 0 defaultly.
+
+Classes: 
+- Game, which is the class for the whole game process; 
+- PerpetualTimer, which is a helper class for game status transition.
+
+Dependencies:
+- pygame and tkinter
+- multiplayermaze.py
+
+How to use it:
+# start the game
+# newGame = Game() //create object without highscore
+# newGame.run() //call run() to run the game
+# print("Your score: {}".format(newGame.statusScore)) //access the related attributes
+
+Known issues:
+During the game process, directly click the x button at the right-upper corner may cause abnormal exit due to the feature of tkinter. Please always use Esc to safely exit.
+
+Acknowledgement and References: 
+Bandai Namco Entertainment America Inc: https://www.bandainamcoent.com/games/pac-man
+Github project: https://github.com/greyblue9/pacman-python
+Github project: https://github.com/lylant/PacMan-Pygame
+"""
+
+
 from tkinter import Tk, Label, Entry, Button, PhotoImage, messagebox, END, Canvas
 from threading import Timer
 from random import *
