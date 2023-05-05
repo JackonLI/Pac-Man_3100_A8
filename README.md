@@ -1,20 +1,36 @@
-# Pac-Man
+# Pac-Man Description
 Here is the Group A8's course project of CSCI3100: Software Engineering, Spring 2023, CUHK. 
 
 We are building our own version of the classic Pac-Man game in Python! We plan to keep the classic mode of Pac-Man and add more exciting elements like powerful items, fun modes, and AI agent. Follow us to know more!
 
+This project currently is a Python-based implementation of the classic Pac-Man game with three modes: classical, multiplayer, and AI. The project uses pygame as the main library for graphics and sound.
 
-# Group Members
+The classical mode is the original Pac-Man game logic, where the player controls Pac-Man to eat dots and avoid ghosts in a maze. The multiplayer mode is a two-player version of Pac-Man game logic, where two player controls weo Pac-Mans. The AI mode is a single-player version of Pac-Man game logic, where the player cannot play and both Pac-Man and the ghost controlled by AI.
 
-BAI Yuan, 1155157073
+# Requirements and How to Run
 
-BAO Wenrui, 1155157220
+To run this project, you need to have Python 3 and pygame installed on your system. You can install pygame using pip:
 
-LI Jianqiang, 1155157143
+`pip install pygame`
 
-YUE Haoyuan, 1155157271
+To run the project, you need to clone this repository and navigate to the root directory. Then you can execute the following command:
 
-ZHANG Juyuan, 1155160257
+`python login_data.py`
+
+This will launch the game window, where you can choose a mode and start playing.
+
+
+# Group Members and Contribution
+
+This project is developed by GroupA8, which consists of the following members:
+
+|  Name  |  SID  |  Contribution  |
+|--------|-------|----------------|
+| BAI Yuan | 1155157073 | responsible for the sound, animation, and design mazes for different difficulty levels, including the sound effects and background music for different game situations, the animation effects for Pac-Man, fruit’s appearance, etc. |
+| BAO Wenrui | 1155157220 | responsible for the homepage design and functionality, including the main menu, instructions, and exit options. |
+| LI Jianqiang | 1155157143 | responsible for the basic gameplay logic and implementation, including the Pac-Man and ghost movement, dot and power pellet effect, fruit and bonus point effect, and collision detection. |
+| YUE Haoyuan | 1155157271 | responsible for the AI player feature, including the AI algorithm for Pac-Man and ghost behavior. |
+| ZHANG Juyuan | 1155160257 | responsible for the database and user management system, including the user registration, login, logout, profile management, and leaderboard functions. |
 
 # Progress
 Phase 1: High-Level Design Document    (DONE)
@@ -25,8 +41,15 @@ Phase 2b: GitHub Repository Creation    (DONE)
 
 Phase 3: UML Specification and UI Design Document    (DONE)
 
-Phase 4: Project Demo    (DUE at 4/13)
+Phase 4: Project Demo    (DONE)
 
 Phase 5a: Testing Document    (DUE at 5/6)
 
 Phase 5b: Final code    (DUE at 5/6)
+
+# Acknowledge and References
+We would like to thank our CSCI3100 Teaching Staffs for their guidance and support throughout this project. We would also like to thank the following resources that we used or referenced in this project:
+
+Pygame: a cross-platform library for making multimedia applications like games using Python. https://www.pygame.org/
+
+Pac-Man Sounds: Our sound effects are taken from various free music libraries. In addition, 8bit music mainly comes from NetEase Cloud Music.
