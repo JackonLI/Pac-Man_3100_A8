@@ -1,7 +1,7 @@
 """
 Project: Pac-Man A8 in CSCI3100, CUHK
 Program: Maze generator and object classes for classic mode game
-Main Contributor: Yuan BAI
+Main Contributor: Yuan BAI, Jianqiang LI
 Created: March 28, 2023
 Last Modified: May 5, 2023
 Github Access: https://github.com/JackonLI/Pac-Man_3100_A8
