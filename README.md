@@ -25,6 +25,10 @@ This will launch the game window, where you can choose a mode and start playing.
 
 * To start the game, use your mouse to click on the main menu options.
 
+* To quit the game in gameplay, press the ESC key.
+
+* To quit the game after gameover or win, press the ENTER key.
+
 * To control Pac-Man, use the arrow keys or the W, A, S, D keys on your keyboard. You can move Pac-Man up, down, left or right to eat the dots and avoid the ghosts.
 
 * In multi-player mode, you can control two Pac-Men with different sets of keys. The arrow keys control one Pac-Man and the W, A, S, D keys control the other Pac-Man. You can cooperate or compete with each other to get a higher score.
