@@ -1,3 +1,34 @@
+"""
+Project: Pac-Man A8 in CSCI3100, CUHK
+Program: Maze generator and object classes for classic mode game
+Main Contributor: Haoyuan YUE, Yuan BAI
+Created: March 28, 2023
+Last Modified: May 5, 2023
+Github Access: https://github.com/JackonLI/Pac-Man_3100_A8
+
+Description: 
+This program provides all the needed classes for the game engine: Maze, LevelObject, and Movingobject.
+
+Classes: 
+- Maze, which is the class for the maze generator. It can load a maze by a given txt file, and update the maze state during gaming.
+- LevelObject, which is the class for all still elements, i.e. dots, fruits, walls, empty cells, tunnels, door, and ghost box.
+- MovingObject, which is the class for all moving elements, i.e. pac-man and ghosts.
+
+Dependencies:
+- right-format maze file in txt
+
+How to use it:
+# create a new maze
+# newMaze = Maze()
+
+Known issues:
+None.
+
+Acknowledgement and References: 
+Bandai Namco Entertainment America Inc: https://www.bandainamcoent.com/games/pac-man
+Github project: https://github.com/greyblue9/pacman-python
+Github project: https://github.com/lylant/PacMan-Pygame
+"""
 import os
 from random import randint
 import math
