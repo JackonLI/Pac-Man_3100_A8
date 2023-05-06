@@ -9,7 +9,7 @@ The classical mode is the original Pac-Man game logic, where the player controls
 
 # Requirements and How to Run
 
-To run this project, you need to have Python 3， pygame， and tkinter installed on your system. You can install pygame and tkinter using pip:
+To run this project, you need to have Python 3, pygame, and tkinter installed on your system. You can install pygame and tkinter using pip:
 
 `pip install pygame`
 
