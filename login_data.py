@@ -39,7 +39,7 @@ SCREEN_SIZE = (900, 500)
 # Fond
 FONT = pygame.font.Font('zig_____.ttf', 15)
 font = pygame.font.Font('zig_____.ttf', 15)
-# Database
+# Database defination part
 db = pymysql.connect(host="localhost", user="root", password="vw#5y#ub", database="records", charset="utf8")
 cursor = db.cursor()
 cursor.execute("use records")
@@ -49,6 +49,7 @@ cursor.execute("CREATE TABLE IF NOT EXISTS proj_db(\
    score int,\
    PRIMARY KEY (name)\
 )")
+# definition of pygame screen and inputbox part 
 def starting_interface():
     screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption('Login')
@@ -68,6 +69,7 @@ def starting_interface():
         screen.blit(bg_image, (0, 0))
         pygame.display.flip()
 
+# definition function of choosing to start game or register account
 def choose_start():
     screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption('Choose to start')
@@ -81,7 +83,7 @@ def choose_start():
         choose_start() 
 
 
-
+# defination of two different color inputbox
 def render_text1(text, font, color=(255, 0, 0)):
     text_surface = font.render(text, True, color)
     return text_surface, text_surface.get_rect()
@@ -148,6 +150,7 @@ def input_box(screen, prompt, x, y, c):
             pygame.draw.rect(screen, (102, 156, 255), input_rect, 2)
             pygame.display.flip()
 
+# Register function 
 def Register():
     screen1 = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption('Register')
@@ -175,7 +178,7 @@ def Register():
                 else:
                     Register()
                 break
-
+# Login function
 def Login():
     screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption('Login')
@@ -223,6 +226,7 @@ def Login():
             else:
                 Login()
 
+# when adding a new record of score, we need to update the local database 
 def Update_database(user):
     cursor.execute("Delete from proj_db where name = %s" % (repr(user)))
     cursor.execute("insert into proj_db (name, password, score) VALUES (%s, %s, %s)" % (repr(user), repr(dic[user][0]), repr(dic[user][1])))
