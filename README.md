@@ -21,6 +21,34 @@ To run the project, you need to clone this repository and navigate to the root d
 
 This will launch the game window, where you can choose a mode and start playing.
 
+# Guidence for creating the local database for user's local host
+
+Steps for setting up sql and pymysql:
+
+1. Install the sql client. 
+
+Interface according to the mysql.png in the document
+
+2. Modify login_data.py the code section and set the host to the name and password of the client on your computer to complete the link
+
+3. Use the connect method to connect to our database. For example, 
+
+`db = pymysql.connect(host="localhost", user="root", password="password", database="test", charset="utf8")`
+
+4. Then get the cursor by(this is for fetch your data in the database)
+
+`cursor = db.cursor()`
+
+5. Then follow the basic mysql syntax, call the cursor.execute() method to run mysql commands with pymysql. For example,
+   This is optional because our program code is completed settings, you can reset it according to your preference.
+
+`cursor.execute("CREATE TABLE IF NOT EXISTS proj_db(\
+   name VARCHAR(100) NOT NULL,\
+   password VARCHAR(100) NOT NULL,\
+   score int,\
+   PRIMARY KEY (name)\
+)")`
+
 
 # Group Members and Contribution
 
