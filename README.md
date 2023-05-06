@@ -21,6 +21,16 @@ To run the project, you need to clone this repository and navigate to the root d
 
 This will launch the game window, where you can choose a mode and start playing.
 
+# How to play
+
+* To start the game, use your mouse to click on the main menu options.
+
+* To control Pac-Man, use the arrow keys or the W, A, S, D keys on your keyboard. You can move Pac-Man up, down, left or right to eat the dots and avoid the ghosts.
+
+* In multi-player mode, you can control two Pac-Men with different sets of keys. The arrow keys control one Pac-Man and the W, A, S, D keys control the other Pac-Man. You can cooperate or compete with each other to get a higher score.
+
+Have fun playing Pac-Man!
+
 # Guidance for creating the local database for user's local host
 
 Steps for setting up sql and pymysql:
