@@ -1,3 +1,31 @@
+"""
+Project: Pac-Man A8 in CSCI3100, CUHK
+Program: Maze generator and object classes for classic mode game
+Main Contributor: Haoyuan YUE
+Created: March 28, 2023
+Last Modified: May 5, 2023
+Github Access: https://github.com/JackonLI/Pac-Man_3100_A8
+
+Description: 
+This class is used to calculate the distance
+
+Classes: 
+- Vector2-Generate a vector between two points
+
+Dependencies:
+- NA
+
+How to use it:
+#
+
+Known issues:
+None.
+
+Acknowledgement and References: 
+Bandai Namco Entertainment America Inc: https://www.bandainamcoent.com/games/pac-man
+Github project: https://github.com/greyblue9/pacman-python
+Github project: https://github.com/lylant/PacMan-Pygame
+"""
 import math
 
 class Vector2(object):
