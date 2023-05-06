@@ -21,7 +21,7 @@ To run the project, you need to clone this repository and navigate to the root d
 
 This will launch the game window, where you can choose a mode and start playing.
 
-# Guidence for creating the local database for user's local host
+# Guidance for creating the local database for user's local host
 
 Steps for setting up sql and pymysql:
 
