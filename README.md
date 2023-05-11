@@ -87,9 +87,9 @@ Phase 3: UML Specification and UI Design Document    (DONE)
 
 Phase 4: Project Demo    (DONE)
 
-Phase 5a: Testing Document    (DUE at 5/6)
+Phase 5a: Testing Document    (DONE)
 
-Phase 5b: Final code    (DUE at 5/6)
+Phase 5b: Final code    (DONE)
 
 # Acknowledge and References
 We would like to thank our CSCI3100 Teaching Staffs for their guidance and support throughout this project. We would also like to thank the following resources that we used or referenced in this project:
